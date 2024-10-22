@@ -1,7 +1,8 @@
-﻿namespace MonolithModularNET.Auth.Core;
+﻿using System.Security.Claims;
+
+namespace MonolithModularNET.Auth.Core;
 
 public interface IJwtService: IDisposable
 {
-    
-    public string Encrypt(object data);
+    public string Encrypt(List<Claim> claims);
 }
