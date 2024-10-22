@@ -11,14 +11,12 @@ public class SignUpService: ISignUpService<AuthUser, AuthRole>
     private readonly UserManager<AuthUser> _userManager;
     private readonly RoleManager<AuthRole> _roleManager;
     private readonly IUnitOfWork<AuthContext, IDbContextTransaction> _unitOfWork;
-    private readonly AuthContext _context;
 
-    public SignUpService(UserManager<AuthUser> userManager, RoleManager<AuthRole> roleManager, IUnitOfWork<AuthContext, IDbContextTransaction> unitOfWork, AuthContext context)
+    public SignUpService(UserManager<AuthUser> userManager, RoleManager<AuthRole> roleManager, IUnitOfWork<AuthContext, IDbContextTransaction> unitOfWork)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _unitOfWork = unitOfWork;
-        _context = context;
     }
 
     public async Task<IdentityResult> SignUpAsync(SignUpRequest request, CancellationToken cancellationToken = default(CancellationToken))
@@ -31,6 +29,7 @@ public class SignUpService: ISignUpService<AuthUser, AuthRole>
 
             if (defaultRole is null)
             {
+                //TODO: Change exception
                 throw new Exception("Not support Default Role");
             }
 
@@ -44,6 +43,7 @@ public class SignUpService: ISignUpService<AuthUser, AuthRole>
 
             if (!identityResult.Succeeded)
             {
+                //TODO: Change exception
                 throw new Exception("Can't create user, please try again");
             }
             await _unitOfWork.SaveChangesAsync(cancellationToken);
