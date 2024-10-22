@@ -33,6 +33,9 @@ public static class Startup
         // Add AuthService
         services.TryAddScoped<ISignUpService<AuthUser, AuthRole>, SignUpService>();
         
+        // Add JWTService
+        services.TryAddScoped<IJwtService, JwtService>();
+        
         return services;
     }
 
