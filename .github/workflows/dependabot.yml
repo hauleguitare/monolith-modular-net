@@ -11,9 +11,9 @@ updates:
     schedule:
       interval: "daily"
 
-  # Enable version updates for Docker
+  # Enable version updates for Nuget
   - package-ecosystem: "nuget"
-    # Look for a `Dockerfile` in the `root` directory
+    # Look for a `src` in the `root` directory
     directory: "/src"
     # Check for updates once a week
     schedule:
