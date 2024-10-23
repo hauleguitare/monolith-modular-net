@@ -1,6 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using MonolithModularNET.Auth.Core;
 
@@ -20,9 +19,9 @@ public class JwtService: IJwtService
         GC.SuppressFinalize(this);
     }
 
-    public string Encrypt(List<Claim> claims)
+    public string Encoding(List<Claim> claims)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey!));
+        var securityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_options.SecretKey!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         var expiredAt = DateTime.UtcNow.AddMinutes(_options.ExpiresIn);
 
@@ -33,5 +32,10 @@ public class JwtService: IJwtService
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    public JwtSecurityToken Decoding(string token)
+    {
+         return new JwtSecurityTokenHandler().ReadJwtToken(token);
     }
 }

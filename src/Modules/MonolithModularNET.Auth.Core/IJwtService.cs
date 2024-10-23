@@ -1,8 +1,11 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace MonolithModularNET.Auth.Core;
 
 public interface IJwtService: IDisposable
 {
-    public string Encrypt(List<Claim> claims);
+    public string Encoding(List<Claim> claims);
+
+    public JwtSecurityToken Decoding(string token);
 }
