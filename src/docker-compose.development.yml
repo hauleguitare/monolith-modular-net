@@ -6,6 +6,8 @@ services:
     ports:
       - '6379:6379'
     restart: unless-stopped
+    networks:
+      - redis_network
   
   redis-insight:
     image: redis/redisinsight:latest
@@ -14,6 +16,8 @@ services:
     restart: unless-stopped
     volumes:
       - redisinsight:/data
+    networks:
+      - redis_network
   
   postgres:
     image: postgres
@@ -54,4 +58,7 @@ volumes:
 
 networks:
   postgres_network:
+    driver: bridge
+    
+  redis_network:
     driver: bridge

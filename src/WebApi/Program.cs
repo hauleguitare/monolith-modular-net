@@ -9,11 +9,12 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Add MonolithModularNET Cache Bootstrapper
+builder.Services.AddCacheBootstrapper(builder.Configuration, builder.Environment);
+
 // Add MonolithModularNET Auth Bootstrapper
 builder.Services.AddAuthBootstrapper(builder.Configuration, builder.Environment);
 
-// Add MonolithModularNET Cache Bootstrapper
-builder.Services.AddCacheBootstrapper(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 

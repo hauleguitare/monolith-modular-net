@@ -22,7 +22,7 @@ internal static class MonolithModularNetAuthBootstrapper
 
         services.AddAuthJwtToken(options =>
         {
-            options.SecretKey = "@00282jseaX#@!XDAS3213123!312345345XDk23dKngmf5Ygvewq@**64534312dascghgffsfsd@#dasd";
+            options.SecretKey = "bOBL7HWpP898C3zkWKQS8Uqa5ZWX/7UnSM5yRWOSZWTennHj5ZESA917+8Nlx65L";
             options.ExpiresIn = 60;
         });
         return services;

@@ -20,6 +20,11 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
         });
     }
 
+    public string? Get(string key)
+    {
+        return distributedCache.GetString(key);
+    }
+
     public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
     {
         var rawData = await distributedCache.GetStringAsync(key, cancellationToken);
@@ -33,6 +38,11 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
         });
 
         return result;
+    }
+
+    public async Task<string?> GetAsync(string key, CancellationToken cancellationToken = default)
+    {
+        return await distributedCache.GetStringAsync(key, cancellationToken);
     }
 
 

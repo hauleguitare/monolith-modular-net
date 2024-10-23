@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Text;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,23 @@ public static class Startup
                 return Results.InternalServerError();
             }
 
-            return Results.Ok(new { Token = result.AccessToken });
+
+            return Results.Ok(new { AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
+        });
+
+        groupBuilder.MapPost("/refresh", async (RefreshTokenRequest request, HttpContext context) =>
+        {
+            var service = context.RequestServices.GetRequiredService<ISignInService<AuthUser>>();
+
+            var result = await service.RefreshAsync(request.RequestToken, request.UserId);
+            
+            if (!result.Succeed)
+            {
+                return Results.InternalServerError();
+            }
+
+
+            return Results.Ok(new { AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
         });
 
         return app;
@@ -70,6 +87,8 @@ public static class Startup
         services.TryAddScoped<ISignUpService<AuthUser, AuthRole>, SignUpService>();
         // Add JWTService
         services.TryAddScoped<IJwtService, JwtService>();
+        // Add RefreshTokenService
+        services.TryAddScoped<IRefreshTokenService, RefreshTokenService>();
         // Add SignInService
         services.TryAddScoped<ISignInService<AuthUser>, SignInService>();
         
@@ -85,13 +104,20 @@ public static class Startup
         {
             services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
             {
-                SecretKey = "@32jseaX#@!XDAS3213123!312345345XDk23dKngmf5Ygvewq@**64534312dascghgffsfsd@#dasd",
+                SecretKey = "bOBL7HWpP898C3zkWKQS8Uqa5ZWX/7UnSM5yRWOSZWTennHj5ZESA917+8Nlx65L",
                 ExpiresIn = 120
             });
         }
         else
         {
             options.Invoke(jwtTokenOptions);
+            
+            ArgumentNullException.ThrowIfNull(jwtTokenOptions.SecretKey);
+
+            if (Encoding.UTF8.GetBytes(jwtTokenOptions.SecretKey).Length != 64)
+            {
+                throw new ArgumentException($"{nameof(jwtTokenOptions.SecretKey)} must be 64 bytes length");
+            }
             
             services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
             {

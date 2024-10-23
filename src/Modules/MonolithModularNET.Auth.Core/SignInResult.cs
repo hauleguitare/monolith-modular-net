@@ -6,12 +6,15 @@ public class SignInResult
     
     public string? AccessToken { get; set; }
     
+    public string? RefreshToken { get; set; }
+    
     public ICollection<AuthError>? Errors { get; set; }
 
-    public static SignInResult Success(string accessToken) => new SignInResult()
+    public static SignInResult Success(string accessToken, string refreshToken) => new SignInResult()
     {
         Succeed = true,
-        AccessToken = accessToken
+        AccessToken = accessToken,
+        RefreshToken = refreshToken
     };
 
     public static SignInResult Failure(ICollection<AuthError> errors) => new SignInResult()

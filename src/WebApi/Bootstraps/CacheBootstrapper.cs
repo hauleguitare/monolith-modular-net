@@ -9,8 +9,8 @@ public static class CacheBootstrapper
     {
         services.AddMonolithModularNetCache(options =>
         {
-            options.ConnectionString = "http://localhost:6379";
-            options.InstanceName = "monolith-modular-net";
+            options.ConnectionString = "localhost:6379";
+            options.InstanceName = "monolith-modular-net:";
         });
 
         return services;
