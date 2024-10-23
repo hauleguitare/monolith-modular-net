@@ -12,8 +12,10 @@ builder.Services.AddOpenApi();
 // Add MonolithModularNET Auth Bootstrapper
 builder.Services.AddMonolithModularNetAuthBootstrapper(builder.Configuration, builder.Environment);
 
-var app = builder.Build();
+// Add MonolithModularNET Cache Bootstrapper
+builder.Services.AddCacheBootstrapper(builder.Configuration, builder.Environment);
 
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
