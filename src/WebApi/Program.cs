@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // Add MonolithModularNET Auth Bootstrapper
-builder.Services.AddMonolithModularNetAuthBootstrapper(builder.Configuration, builder.Environment);
+builder.Services.AddAuthBootstrapper(builder.Configuration, builder.Environment);
 
 // Add MonolithModularNET Cache Bootstrapper
 builder.Services.AddCacheBootstrapper(builder.Configuration, builder.Environment);

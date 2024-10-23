@@ -5,7 +5,7 @@ namespace WebApi.Bootstraps;
 
 internal static class MonolithModularNetAuthBootstrapper
 {
-    internal static IServiceCollection AddMonolithModularNetAuthBootstrapper(this IServiceCollection services,
+    internal static IServiceCollection AddAuthBootstrapper(this IServiceCollection services,
         IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.AddMonolithModularNetAuth(opts =>
