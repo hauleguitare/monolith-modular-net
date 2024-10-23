@@ -39,6 +39,35 @@ public static class Startup
         return services;
     }
 
+    public static IServiceCollection AddAuthJwtToken(this IServiceCollection services,
+        Action<AuthJwtTokenOptions>? options = null)
+    {
+        var jwtTokenOptions = new AuthJwtTokenOptions();
+
+        if (options is null)
+        {
+            services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
+            {
+                SecretKey = "@32jseaX#@!XDAS3213123!312345345XDk23dKngmf5Ygvewq@**64534312dascghgffsfsd@#dasd",
+                ExpiresIn = 120
+            });
+        }
+        else
+        {
+            options.Invoke(jwtTokenOptions);
+            
+            services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
+            {
+                SecretKey = jwtTokenOptions.SecretKey,
+                ExpiresIn = jwtTokenOptions.ExpiresIn
+            });
+        }
+
+
+       
+        return services;
+    }
+
 
     private static IServiceCollection AddAuthRole(this IServiceCollection services)
     {

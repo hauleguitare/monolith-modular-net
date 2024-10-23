@@ -8,10 +8,13 @@ namespace MonolithModularNET.Auth;
 
 public class JwtService: IJwtService
 {
-    public string SecretKey = "@32jseaX#@!XDAS3213123!312345345gdfgdfsdadas34312dascghgffsfsd@#dasd";
-    public string Issuer = "http://localhost:5430";
-    public int ExpiresIn = 120;
-    
+    private readonly AuthJwtTokenOptions _options;
+
+    public JwtService(AuthJwtTokenOptions options)
+    {
+        _options = options;
+    }
+
     public void Dispose()
     {
         GC.SuppressFinalize(this);
@@ -19,12 +22,12 @@ public class JwtService: IJwtService
 
     public string Encrypt(List<Claim> claims)
     {
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey!));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        var expiredAt = DateTime.UtcNow.AddMinutes(ExpiresIn);
+        var expiredAt = DateTime.UtcNow.AddMinutes(_options.ExpiresIn);
 
-        var token = new JwtSecurityToken(Issuer,
-            Issuer,
+        var token = new JwtSecurityToken(_options.Issuer,
+            _options.Issuer,
             claims,
             expires: expiredAt,
             signingCredentials: credentials);
