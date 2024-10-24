@@ -6,7 +6,6 @@ public interface ISignInService<TUser>: IDisposable where TUser : AuthUser
 {
     IPasswordHasher<TUser> PasswordHasher { get; set; }
     
-    public Task<SignInResult> SignInAsync(TUser user, string password, CancellationToken cancellationToken = default);
-
-    public Task<SignInResult> RefreshAsync(string token, string userId, CancellationToken cancellationToken = default);
+    public Task<AuthResult> SignInAsync(string email, string password, CancellationToken cancellationToken = default);
+    public Task<AuthResult> RefreshAsync(string refreshToken, CancellationToken cancellationToken = default);
 }

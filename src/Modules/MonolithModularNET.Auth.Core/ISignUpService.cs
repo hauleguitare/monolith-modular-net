@@ -4,6 +4,6 @@ namespace MonolithModularNET.Auth.Core;
 
 public interface ISignUpService<TUser, TRole>: IDisposable where TUser : AuthUser where TRole : AuthRole
 {
-    public Task<IdentityResult> SignUpAsync(SignUpRequest request,
+    public Task<AuthResult> SignUpAsync(SignUpRequest request,
         CancellationToken cancellationToken = default(CancellationToken));
 }

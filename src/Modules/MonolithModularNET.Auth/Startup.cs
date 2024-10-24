@@ -1,6 +1,6 @@
-﻿using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -13,54 +13,12 @@ namespace MonolithModularNET.Auth;
 
 public static class Startup
 {
-    public static WebApplication MapMonolithModularNetAuthApis(this WebApplication app)
+    public static WebApplication MapMonolithModularNetAuthApi(this WebApplication app, [StringSyntax("Route")] string pattern = "/api/auth")
     {
-        var groupBuilder = app.MapGroup("api/auth");
-
-        groupBuilder.MapPost("/sign-up", async (SignUpRequest request, ISignUpService<AuthUser, AuthRole> service) =>
-        {
-           await service.SignUpAsync(request);
-            return Results.Ok();
-        });
-
-        groupBuilder.MapPost("/login", async (SignInRequest request, HttpContext context) =>
-        {
-            var service = context.RequestServices.GetRequiredService<ISignInService<AuthUser>>();
-            var userManager = context.RequestServices.GetRequiredService<UserManager<AuthUser>>();
-            
-            var user = await userManager.FindByEmailAsync(request.Email);
-
-            if (user is null)
-            {
-                throw new Exception("User not found");
-            }
-            
-            var result = await service.SignInAsync(user, request.Password);
-
-            if (!result.Succeed)
-            {
-                return Results.InternalServerError();
-            }
-
-
-            return Results.Ok(new { AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
-        });
-
-        groupBuilder.MapPost("/refresh", async (RefreshTokenRequest request, HttpContext context) =>
-        {
-            var service = context.RequestServices.GetRequiredService<ISignInService<AuthUser>>();
-
-            var result = await service.RefreshAsync(request.RequestToken, request.UserId);
-            
-            if (!result.Succeed)
-            {
-                return Results.InternalServerError();
-            }
-
-
-            return Results.Ok(new { AccessToken = result.AccessToken, RefreshToken = result.RefreshToken });
-        });
-
+        var group = app.MapGroup(pattern);
+        group.MapPost("/sign-up", AuthApiHandler.HandleSignUpAsync);
+        group.MapPost("/login", AuthApiHandler.HandleLoginAsync);
+        group.MapPost("/refresh", AuthApiHandler.HandleRefreshAsync);
         return app;
     }
     
@@ -79,7 +37,9 @@ public static class Startup
             .AddEntityFrameworkStores<AuthContext>();
         
         // Add AuthRole
-        services.AddAuthRole();
+        services.TryAddScoped<IRoleValidator<AuthRole>, RoleValidator<AuthRole>>();
+        services.TryAddScoped<RoleManager<AuthRole>>();
+        services.TryAddScoped<IUserClaimsPrincipalFactory<AuthUser>, UserClaimsPrincipalFactory<AuthUser, AuthRole>>();
         
         // Add Auth Unit Of Work
         services.TryAddScoped<IUnitOfWork<AuthContext, IDbContextTransaction>, AuthUnitOfWork>();
@@ -91,6 +51,8 @@ public static class Startup
         services.TryAddScoped<IRefreshTokenService, RefreshTokenService>();
         // Add SignInService
         services.TryAddScoped<ISignInService<AuthUser>, SignInService>();
+        // Add Http Context Accessor
+        services.AddHttpContextAccessor();
         
         return services;
     }
@@ -125,16 +87,6 @@ public static class Startup
                 ExpiresIn = jwtTokenOptions.ExpiresIn
             });
         }
-        return services;
-    }
-
-
-    private static IServiceCollection AddAuthRole(this IServiceCollection services)
-    {
-        services.TryAddScoped<IRoleValidator<AuthRole>, RoleValidator<AuthRole>>();
-        services.TryAddScoped<RoleManager<AuthRole>>();
-        services.TryAddScoped<IUserClaimsPrincipalFactory<AuthUser>, UserClaimsPrincipalFactory<AuthUser, AuthRole>>();
-        
         return services;
     }
 }

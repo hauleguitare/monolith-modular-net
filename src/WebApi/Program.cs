@@ -15,6 +15,12 @@ builder.Services.AddCacheBootstrapper(builder.Configuration, builder.Environment
 // Add MonolithModularNET Auth Bootstrapper
 builder.Services.AddAuthBootstrapper(builder.Configuration, builder.Environment);
 
+// Add Authentication
+builder.Services.AddResourceAuthentication(builder.Configuration, builder.Environment);
+
+// Add Authorization
+builder.Services.AddResourceAuthorization(builder.Configuration, builder.Environment);
+
 
 var app = builder.Build();
 
@@ -22,12 +28,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    app.MapGet("api/hello-world", () => "Hello World").RequireAuthorization();
 }
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
 // app.MapControllers();
-app.MapMonolithModularNetAuthApis();
+app.MapMonolithModularNetAuthApi();
 
 
 app.Run();

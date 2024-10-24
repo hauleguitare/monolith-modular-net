@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Abstractions;
-using SignInResult = MonolithModularNET.Auth.Core.SignInResult;
 
 namespace MonolithModularNET.Auth;
 
@@ -12,31 +12,55 @@ public class SignInService: ISignInService<AuthUser>
     private readonly IRefreshTokenService _refreshTokenService;
     private readonly ICacheService _cacheService;
     private readonly AuthJwtTokenOptions _options;
+    private readonly UserManager<AuthUser> _userManager;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public SignInService( IJwtService jwtService, IPasswordHasher<AuthUser> passwordHasher, AuthJwtTokenOptions options, IRefreshTokenService refreshTokenService, ICacheService cacheService)
+    public SignInService( IJwtService jwtService, IPasswordHasher<AuthUser> passwordHasher, AuthJwtTokenOptions options, IRefreshTokenService refreshTokenService, ICacheService cacheService, UserManager<AuthUser> userManager, IHttpContextAccessor httpContextAccessor)
     {
         _jwtService = jwtService;
         PasswordHasher = passwordHasher;
         _options = options;
         _refreshTokenService = refreshTokenService;
         _cacheService = cacheService;
+        _userManager = userManager;
+        _httpContextAccessor = httpContextAccessor;
+        
+        ArgumentNullException.ThrowIfNull(_options.SecretKey);
     }
 
     public IPasswordHasher<AuthUser> PasswordHasher { get; set; }
 
-    public async Task<SignInResult> SignInAsync(AuthUser user, string password, CancellationToken cancellationToken = default)
+    public async Task<AuthResult> SignInAsync(string email, string password, CancellationToken cancellationToken = default)
     {
+        var describer = new AuthErrorDescriber();
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user is null)
+        {
+            return AuthResult.Failure([describer.EmailNotExisted()]);
+        }
+
+        if (string.IsNullOrEmpty(user.PasswordHash))
+        {
+            return AuthResult.Failure([describer.NotSupportPasswordProvider()]);
+        }
+        
         var verificationResult = PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
 
         if (verificationResult == PasswordVerificationResult.Failed)
         {
-            throw new Exception("Password is not matched");
+            return AuthResult.Failure([describer.PasswordMisMatched()]);
         }
-        
+
+        return await CredentialAsync(user, cancellationToken);
+    }
+
+    private async Task<AuthResult> CredentialAsync(AuthUser user, CancellationToken cancellationToken = default)
+    {
         var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new (ClaimTypes.Email, user.Email!),
+            new (ClaimTypes.NameIdentifier, user.Id),
         };
 
         var jti = Guid.NewGuid().ToString();
@@ -48,41 +72,89 @@ public class SignInService: ISignInService<AuthUser>
 
         if (!rfTokenResult.Succeed)
         {
-            throw new Exception("Refresh Token can't create");
+            throw new Exception("Refresh Token can't create, something went wrong!");
         }
-        _refreshTokenService.ValidateRefreshToken(jti, _options.SecretKey!, rfTokenResult.Token!);
-
+        
         await CacheRefreshTokenAsync(user.Id, rfTokenResult.Token!, expiresTime, cancellationToken);
-
-        return SignInResult.Success(token, rfTokenResult.Token!);
+        
+        return AuthResult.Success(new {AccessToken = token, RefreshToken = rfTokenResult.Token});
     }
 
-    public async Task<SignInResult> RefreshAsync(string token, string userId, CancellationToken cancellationToken = default)
+    private bool TryGetAccessToken(out string? accessToken)
     {
-        var cacheToken = await GetRefreshTokenAsync(userId);
-
-        if (string.IsNullOrEmpty(cacheToken))
+        var token = _httpContextAccessor.HttpContext!.Request.Headers.Authorization.ToString();
+        accessToken = null;
+        
+        if (string.IsNullOrEmpty(token))
         {
-            throw new Exception("Please login in again");
+            return false;
+        }
+        
+        accessToken = token.Replace("Bearer ", "");
+
+        return true;
+    }
+
+    public async Task<AuthResult> RefreshAsync(string refreshToken, CancellationToken cancellationToken = default)
+    {
+        var describer = new AuthErrorDescriber();
+
+        if (!TryGetAccessToken(out var accessToken))
+        {
+            return AuthResult.Failure([describer.InvalidToken()]);
+        }
+        
+        var decodeToken = _jwtService.Decoding(accessToken!);
+        var userId = decodeToken.Claims.FirstOrDefault(e => e.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return AuthResult.Failure([describer.InvalidToken()]);
+        }
+        
+        var validTokenResult = _refreshTokenService.ValidateRefreshToken(decodeToken.Id, _options.SecretKey!, refreshToken);
+
+        if (!validTokenResult.Succeed)
+        {
+            return AuthResult.Failure([describer.InvalidToken()]);
         }
 
-        if (cacheToken != token)
+        var cacheRefreshToken = await GetRefreshTokenAsync(userId);
+
+        if (string.IsNullOrEmpty(cacheRefreshToken))
         {
-            throw new Exception("Token is not match");
+            return AuthResult.Failure([describer.TokenHasExpired()]);
+        }
+        
+        if (!IsEqualRefreshToken(refreshToken, cacheRefreshToken))
+        {
+            return AuthResult.Failure([describer.InvalidToken()]);
         }
 
-        return SignInResult.Success("", "");
+        var user = await _userManager.FindByIdAsync(userId);
+
+        if (user is null)
+        {
+            throw new Exception("User is not found, something went wrong, please check!");
+        }
+
+        return await CredentialAsync(user, cancellationToken);
+    }
+
+    private bool IsEqualRefreshToken(string client, string server)
+    {
+        return client == server;
     }
 
     private async Task CacheRefreshTokenAsync(string userId, string refreshToken, TimeSpan expiresTime, CancellationToken cancellationToken = default)
     {
-        var key = $"refresh-token-user-id:{userId}";
+        var key = $"{RefreshTokenConstants.CachePrefix}:{userId}";
         await _cacheService.SetAsync(key, refreshToken, expiresTime, cancellationToken);
     }
     
     private async Task<string?> GetRefreshTokenAsync(string userId)
     {
-        var key = $"refresh-token-user-id:{userId}";
+        var key = $"{RefreshTokenConstants.CachePrefix}:{userId}";
         return await _cacheService.GetAsync(key);
     }
 

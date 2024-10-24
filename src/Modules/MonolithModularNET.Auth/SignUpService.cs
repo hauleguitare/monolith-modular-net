@@ -12,9 +12,10 @@ public class SignUpService(
     IUnitOfWork<AuthContext, IDbContextTransaction> unitOfWork)
     : ISignUpService<AuthUser, AuthRole>
 {
-    public async Task<IdentityResult> SignUpAsync(SignUpRequest request, CancellationToken cancellationToken = default(CancellationToken))
+    public async Task<AuthResult> SignUpAsync(SignUpRequest request, CancellationToken cancellationToken = default(CancellationToken))
     {
-        var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
+        var describer = new AuthErrorDescriber();
+        await unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
             var defaultRole = await roleManager.Roles.Where(e => e.IsDefault).OrderByDescending(e => e.Priority)
@@ -22,8 +23,7 @@ public class SignUpService(
 
             if (defaultRole is null)
             {
-                //TODO: Change exception
-                throw new Exception("Not support Default Role");
+                return AuthResult.Failure([describer.RoleNotFound()]);
             }
 
             var user = new AuthUser()
@@ -36,22 +36,24 @@ public class SignUpService(
 
             if (!identityResult.Succeeded)
             {
-                //TODO: Change exception
-                throw new Exception("Can't create user, please try again");
+                return AuthResult.Failure(identityResult.Errors.Select(e => new AuthError()
+                {
+                    Code = e.Code,
+                    Description = e.Description
+                }).ToList());
             }
             await unitOfWork.SaveChangesAsync(cancellationToken);
             await userManager.AddToRoleAsync(user, defaultRole.Name!);
             
             await unitOfWork.SaveChangesAsync(cancellationToken);
             
-            await transaction.CommitAsync(cancellationToken);
-            return identityResult;
+            await unitOfWork.CommitAsync(cancellationToken);
+            
+            return AuthResult.Success();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            
-            await transaction.RollbackAsync(cancellationToken);
+            await unitOfWork.RollbackAsync(cancellationToken);
             throw;
         }
         
