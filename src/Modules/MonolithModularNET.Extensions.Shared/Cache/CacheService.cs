@@ -5,11 +5,14 @@ using Newtonsoft.Json.Serialization;
 
 namespace MonolithModularNET.Extensions.Shared.Cache;
 
-public class CacheService(IDistributedCache distributedCache) : ICacheService
+public abstract class CacheService<TDistributeCache>(TDistributeCache distributeCache) : ICacheService
+    where TDistributeCache : IDistributedCache
 {
+    private readonly TDistributeCache _distributeCache = distributeCache;
+
     public T? Get<T>(string key)
     {
-        var rawData = distributedCache.GetString(key);
+        var rawData = _distributeCache.GetString(key);
 
         return string.IsNullOrEmpty(rawData) ? default : JsonConvert.DeserializeObject<T>(rawData,new JsonSerializerSettings()
         {
@@ -22,12 +25,12 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
 
     public string? Get(string key)
     {
-        return distributedCache.GetString(key);
+        return _distributeCache.GetString(key);
     }
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
     {
-        var rawData = await distributedCache.GetStringAsync(key, cancellationToken);
+        var rawData = await _distributeCache.GetStringAsync(key, cancellationToken);
 
         var result = string.IsNullOrEmpty(rawData) ? default : JsonConvert.DeserializeObject<T>(rawData, new JsonSerializerSettings()
         {
@@ -42,7 +45,7 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
 
     public async Task<string?> GetAsync(string key, CancellationToken cancellationToken = default)
     {
-        return await distributedCache.GetStringAsync(key, cancellationToken);
+        return await _distributeCache.GetStringAsync(key, cancellationToken);
     }
 
 
@@ -54,7 +57,7 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
-            distributedCache.SetString(key, rawData, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan));
+            _distributeCache.SetString(key, rawData, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan));
             return true;
         }
         catch (Exception)
@@ -71,7 +74,7 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
             {
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
-            await distributedCache.SetStringAsync(key, rawData, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan), cancellationToken);
+            await _distributeCache.SetStringAsync(key, rawData, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan), cancellationToken);
             return true;
         }
         catch (Exception)
@@ -84,7 +87,7 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
     {
         try
         {
-            distributedCache.SetString(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan));
+            _distributeCache.SetString(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan));
             return true;
         }
         catch (Exception)
@@ -97,10 +100,10 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
     {
         try
         {
-            await distributedCache.SetStringAsync(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan), cancellationToken);
+            await _distributeCache.SetStringAsync(key, value, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan), cancellationToken);
             return true;
         }
-        catch (Exception)
+        catch (ArgumentNullException ex)
         {
             return false;
         }
@@ -109,6 +112,21 @@ public class CacheService(IDistributedCache distributedCache) : ICacheService
 
     public void Remove(string key)
     {
-        distributedCache.Remove(key);
+        _distributeCache.Remove(key);
+    }
+
+    public async Task<bool> RemoveAsync(string key, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await _distributeCache.RemoveAsync(key, cancellationToken);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
     }
 }

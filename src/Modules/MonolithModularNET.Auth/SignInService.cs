@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using MonolithModularNET.Auth.Core;
-using MonolithModularNET.Extensions.Abstractions;
+using MonolithModularNET.Extensions.Shared.Cache;
 
 namespace MonolithModularNET.Auth;
 
@@ -10,21 +10,23 @@ public class SignInService: ISignInService<AuthUser>
 {
     private readonly IJwtService _jwtService;
     private readonly IRefreshTokenService _refreshTokenService;
-    private readonly ICacheService _cacheService;
     private readonly AuthJwtTokenOptions _options;
     private readonly UserManager<AuthUser> _userManager;
+    private readonly RoleManager<AuthRole> _roleManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthCacheService _cacheService;
 
-    public SignInService( IJwtService jwtService, IPasswordHasher<AuthUser> passwordHasher, AuthJwtTokenOptions options, IRefreshTokenService refreshTokenService, ICacheService cacheService, UserManager<AuthUser> userManager, IHttpContextAccessor httpContextAccessor)
+    public SignInService( IJwtService jwtService, IPasswordHasher<AuthUser> passwordHasher, AuthJwtTokenOptions options, IRefreshTokenService refreshTokenService, UserManager<AuthUser> userManager, IHttpContextAccessor httpContextAccessor, IAuthCacheService cacheService, RoleManager<AuthRole> roleManager)
     {
         _jwtService = jwtService;
         PasswordHasher = passwordHasher;
         _options = options;
         _refreshTokenService = refreshTokenService;
-        _cacheService = cacheService;
         _userManager = userManager;
         _httpContextAccessor = httpContextAccessor;
-        
+        _cacheService = cacheService;
+        _roleManager = roleManager;
+
         ArgumentNullException.ThrowIfNull(_options.SecretKey);
     }
 
@@ -55,8 +57,36 @@ public class SignInService: ISignInService<AuthUser>
         return await CredentialAsync(user, cancellationToken);
     }
 
+    public async Task<AuthResult> LogoutAsync(CancellationToken cancellationToken = default)
+    {
+        var describer = new AuthErrorDescriber();
+
+        if (!TryGetAccessToken(out var accessToken))
+        {
+            return AuthResult.Failure([describer.InvalidToken()]);
+        }
+        
+        var decodeToken = _jwtService.Decoding(accessToken!);
+        var userId = decodeToken.Claims.FirstOrDefault(e => e.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return AuthResult.Failure([describer.InvalidToken()]);
+        }
+
+        var refreshTokenQuery = new CacheQueryBuilder().Append(AuthCacheSchemas.RefreshTokenUser).Append(userId).ToString();
+        var roleUserQuery = new CacheQueryBuilder().Append(AuthCacheSchemas.UserRoles).Append(userId).ToString();
+        await _cacheService.RemoveAsync(refreshTokenQuery, cancellationToken);
+        await _cacheService.RemoveAsync(roleUserQuery, cancellationToken);
+        
+        return AuthResult.Success();
+    }
+    
+
     private async Task<AuthResult> CredentialAsync(AuthUser user, CancellationToken cancellationToken = default)
     {
+        
+        // Refresh token operation
         var claims = new List<Claim>()
         {
             new (ClaimTypes.Email, user.Email!),
@@ -74,9 +104,23 @@ public class SignInService: ISignInService<AuthUser>
         {
             throw new Exception("Refresh Token can't create, something went wrong!");
         }
+        await SetRefreshTokenCacheAsync(user.Id, rfTokenResult.Token!, expiresTime, cancellationToken);
         
-        await CacheRefreshTokenAsync(user.Id, rfTokenResult.Token!, expiresTime, cancellationToken);
         
+        // User roles operation
+
+        var roleNames = await _userManager.GetRolesAsync(user);
+        var roleIds = new List<string>();
+        
+        foreach (var roleName in roleNames)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            
+            roleIds.Add(role!.Id);
+        }
+
+        await SetRoleCacheAsync(user.Id, roleIds, expiresTime, cancellationToken);
+
         return AuthResult.Success(new {AccessToken = token, RefreshToken = rfTokenResult.Token});
     }
 
@@ -119,7 +163,7 @@ public class SignInService: ISignInService<AuthUser>
             return AuthResult.Failure([describer.InvalidToken()]);
         }
 
-        var cacheRefreshToken = await GetRefreshTokenAsync(userId);
+        var cacheRefreshToken = await FindRefreshTokenAsync(userId);
 
         if (string.IsNullOrEmpty(cacheRefreshToken))
         {
@@ -146,15 +190,35 @@ public class SignInService: ISignInService<AuthUser>
         return client == server;
     }
 
-    private async Task CacheRefreshTokenAsync(string userId, string refreshToken, TimeSpan expiresTime, CancellationToken cancellationToken = default)
+    private async Task SetRefreshTokenCacheAsync(string userId, string refreshToken, TimeSpan expiresTime, CancellationToken cancellationToken = default)
     {
-        var key = $"{RefreshTokenConstants.CachePrefix}:{userId}";
+        var cacheQueryBuilder = new CacheQueryBuilder();
+        var key = cacheQueryBuilder.Append(AuthCacheSchemas.RefreshTokenUser)
+            .Append(userId).ToString();
         await _cacheService.SetAsync(key, refreshToken, expiresTime, cancellationToken);
     }
-    
-    private async Task<string?> GetRefreshTokenAsync(string userId)
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId">Identity of user</param>
+    /// <param name="roles">role names user has</param>
+    /// <param name="expiresTime">expires time</param>
+    /// <param name="cancellationToken">cancellation token</param>
+    private async Task SetRoleCacheAsync(string userId, ICollection<string> roles, TimeSpan expiresTime,
+        CancellationToken cancellationToken = default)
     {
-        var key = $"{RefreshTokenConstants.CachePrefix}:{userId}";
+        var cacheQueryBuilder = new CacheQueryBuilder()
+            .Append(AuthCacheSchemas.UserRoles).Append(userId);
+        
+        var key = cacheQueryBuilder.ToString();
+
+        await _cacheService.SetAsync(key, roles, expiresTime, cancellationToken);
+    }
+    
+    private async Task<string?> FindRefreshTokenAsync(string userId)
+    {
+        var key = $"{AuthCacheSchemas.RefreshTokenUser}:{userId}";
         return await _cacheService.GetAsync(key);
     }
 

@@ -1,4 +1,5 @@
-﻿using MonolithModularNET.Extensions.Shared;
+﻿using MonolithModularNET.Auth;
+using MonolithModularNET.Extensions.Shared;
 
 namespace WebApi.Bootstraps;
 
@@ -7,10 +8,10 @@ public static class CacheBootstrapper
     public static IServiceCollection AddCacheBootstrapper(this IServiceCollection services,
         IConfiguration configuration, IWebHostEnvironment environment)
     {
-        services.AddMonolithModularNetCache(options =>
+        services.AddMonolithModularNetAuthCache(options =>
         {
             options.ConnectionString = "localhost:6379";
-            options.InstanceName = "monolith-modular-net:";
+            options.InstanceName = "monolith-modular-net:auth:";
         });
 
         return services;

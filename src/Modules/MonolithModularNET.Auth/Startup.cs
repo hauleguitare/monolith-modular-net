@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Abstractions;
+using MonolithModularNET.Extensions.Shared.Cache;
 
 namespace MonolithModularNET.Auth;
 
@@ -19,7 +21,47 @@ public static class Startup
         group.MapPost("/sign-up", AuthApiHandler.HandleSignUpAsync);
         group.MapPost("/login", AuthApiHandler.HandleLoginAsync);
         group.MapPost("/refresh", AuthApiHandler.HandleRefreshAsync);
+        group.MapPost("/logout", AuthApiHandler.HandleLogoutAsync);
         return app;
+    }
+
+    public static IServiceCollection AddMonolithModularNetAuthCache(this IServiceCollection services,
+        Action<CacheOptions>? cacheAction = null)
+    {
+        // Add distributed cache
+        if (cacheAction is null)
+        {
+            services.AddSingleton<IAuthDistributedCache, AuthDistributedCache>(provider =>
+            {
+                var options = new RedisCacheOptions()
+                {
+                    Configuration = CacheOptionDefault.DefaultConnectionString,
+                    InstanceName = CacheOptionDefault.DefaultInstanceName
+                };
+
+                return new AuthDistributedCache(options);
+            });
+        }
+        else
+        {
+            var cacheOptions = new CacheOptions();
+            cacheAction.Invoke(cacheOptions);
+            services.AddSingleton<IAuthDistributedCache, AuthDistributedCache>(provider =>
+            {
+                var options = new RedisCacheOptions()
+                {
+                    Configuration = cacheOptions.ConnectionString,
+                    InstanceName = cacheOptions.InstanceName
+                };
+
+                return new AuthDistributedCache(options);
+            });
+        }
+        
+        // Add service
+        services.AddScoped<IAuthCacheService, AuthCacheService>();
+
+        return services;
     }
     
     public static IServiceCollection AddMonolithModularNetAuth(this IServiceCollection services,  Action<DbContextOptionsBuilder>? optionsAction = null)
