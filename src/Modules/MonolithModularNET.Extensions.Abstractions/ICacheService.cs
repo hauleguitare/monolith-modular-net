@@ -11,4 +11,5 @@ public interface ICacheService
     bool Set(string key, string value, TimeSpan expirationTimeSpan);
     Task<bool> SetAsync(string key, string value, TimeSpan expirationTimeSpan, CancellationToken cancellationToken = default);
     void Remove(string key);
+    Task<bool> RemoveAsync(string key, CancellationToken cancellationToken = default);
 }

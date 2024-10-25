@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using MonolithModularNET.Auth.Core;
 
 namespace MonolithModularNET.Auth;
@@ -35,6 +34,19 @@ public static class AuthApiHandler
             return Results.BadRequest(AuthResponse.Failure(result.Errors!));
         }
 
+        return Results.Ok(AuthResponse.Success(result.Data));
+    }
+    
+    public static async Task<IResult> HandleLogoutAsync(HttpContext context,
+        ISignInService<AuthUser> service)
+    {
+        var result = await service.LogoutAsync();
+        
+        if (!result.Succeed)
+        {
+            return Results.BadRequest(AuthResponse.Failure(result.Errors!));
+        }
+        
         return Results.Ok(AuthResponse.Success(result.Data));
     }
 }

@@ -13,6 +13,8 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+        
+      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0-rc.2.24474.3" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-rc.2.24473.5" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0-rc.2" />
     </ItemGroup>
@@ -20,6 +22,7 @@
     <ItemGroup>
       <ProjectReference Include="..\MonolithModularNET.Auth.Core\MonolithModularNET.Auth.Core.csproj" />
       <ProjectReference Include="..\MonolithModularNET.Extensions.Abstractions\MonolithModularNET.Extensions.Abstractions.csproj" />
+      <ProjectReference Include="..\MonolithModularNET.Extensions.Shared\MonolithModularNET.Extensions.Shared.csproj" />
     </ItemGroup>
 
 </Project>
