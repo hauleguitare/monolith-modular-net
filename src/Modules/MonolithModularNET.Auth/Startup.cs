@@ -63,13 +63,16 @@ public static class Startup
 
         return services;
     }
-    
-    public static IServiceCollection AddMonolithModularNetAuth(this IServiceCollection services,  Action<DbContextOptionsBuilder>? optionsAction = null)
+
+    public static IServiceCollection AddMonolithModularNetAuthContext(this IServiceCollection services,
+        Action<DbContextOptionsBuilder>? optionsAction = null)
     {
         // Add AuthDbContext
-        services.AddDbContext<AuthDbContext>(optionsAction);
-        
-        
+        return services.AddDbContext<AuthDbContext>(optionsAction);
+    }
+    
+    public static IServiceCollection AddMonolithModularNetAuth(this IServiceCollection services)
+    {
         // Add Identity Core
         services.AddIdentityCore<AuthUser>()
             .AddRoles<AuthRole>()

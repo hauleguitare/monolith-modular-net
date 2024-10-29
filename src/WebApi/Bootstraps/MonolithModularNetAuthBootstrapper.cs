@@ -9,7 +9,7 @@ internal static class MonolithModularNetAuthBootstrapper
         IConfiguration configuration, IWebHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(configuration["Security:JwtSecretKey"]);
-        services.AddMonolithModularNetAuth(opts =>
+        services.AddMonolithModularNetAuthContext(opts =>
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             opts.UseNpgsql(connectionString);
@@ -19,13 +19,13 @@ internal static class MonolithModularNetAuthBootstrapper
                 opts.EnableSensitiveDataLogging();
                 opts.EnableDetailedErrors();
             }
-        });
-
-        services.AddAuthJwtToken(options =>
-        {
-            options.SecretKey = configuration["Security:JwtSecretKey"];
-            options.ExpiresIn = 60;
-        });
+        })
+            .AddMonolithModularNetAuth()
+            .AddAuthJwtToken(options =>
+            {
+                options.SecretKey = configuration["Security:JwtSecretKey"];
+                options.ExpiresIn = 60;
+            });
         return services;
     }
 }
