@@ -2,6 +2,6 @@
 
 public interface IRefreshTokenService
 {
-    public TokenResult GenerateRefreshToken(string jti, string secretKey, DateTime expiredAt);
-    public TokenResult ValidateRefreshToken(string jti, string secretKey, string token);
+    public TokenResult Encoding(GenerateRefreshTokenOptions tokenOptions);
+    public TokenResult Decoding(string jti, string secretKey, string token);
 }

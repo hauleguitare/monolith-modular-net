@@ -125,7 +125,7 @@ public static class Startup
             {
                 throw new ArgumentException($"{nameof(jwtTokenOptions.SecretKey)} must be 64 bytes length");
             }
-            
+
             services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
             {
                 SecretKey = jwtTokenOptions.SecretKey,

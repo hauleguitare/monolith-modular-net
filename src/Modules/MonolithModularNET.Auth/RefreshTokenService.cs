@@ -5,21 +5,27 @@ namespace MonolithModularNET.Auth;
 
 public class RefreshTokenService: IRefreshTokenService
 {
-    public TokenResult GenerateRefreshToken(string jti, string secretKey, DateTime expiredAt)
+    public TokenResult Encoding(GenerateRefreshTokenOptions options)
     {
-        byte[] timeBytes     = BitConverter.GetBytes(expiredAt.ToBinary());
-        byte[] keyBytes      = Guid.Parse(jti).ToByteArray();
-        byte[] secretKeyBytes     = Encoding.UTF8.GetBytes(secretKey);
+        ArgumentNullException.ThrowIfNull(options.Jti);
+        ArgumentNullException.ThrowIfNull(options.SecretKey);
+        ArgumentNullException.ThrowIfNull(options.ExpiredAt);
+
+        byte[] timeBytes     = BitConverter.GetBytes(options.ExpiredAt.Value.ToBinary());
+        byte[] keyBytes      = Guid.Parse(options.Jti).ToByteArray();
+        byte[] secretKeyBytes     = System.Text.Encoding.UTF8.GetBytes(options.SecretKey);
         byte[] dataBytes       = new byte[timeBytes.Length + keyBytes.Length + secretKeyBytes.Length];
 
         Buffer.BlockCopy(timeBytes, 0, dataBytes, 0, timeBytes.Length);
         Buffer.BlockCopy(keyBytes , 0, dataBytes, timeBytes.Length, keyBytes.Length);
         Buffer.BlockCopy(secretKeyBytes , 0, dataBytes, timeBytes.Length + keyBytes.Length, secretKeyBytes.Length);
 
-        return TokenResult.Success(Convert.ToBase64String(dataBytes.ToArray()));
+
+        var token = Convert.ToBase64String(dataBytes);
+        return TokenResult.Success(token);
     }
     
-    public TokenResult ValidateRefreshToken(string jti, string secretKey, string token)
+    public TokenResult Decoding(string jti, string secretKey, string token)
     {
         byte[] dataBytes     = Convert.FromBase64String(token);
         byte[] timeBytes     = dataBytes.Take(8).ToArray();
@@ -44,7 +50,7 @@ public class RefreshTokenService: IRefreshTokenService
             });
         }
 
-        if (Encoding.UTF8.GetString(secretKeyBytes) != secretKey)
+        if (System.Text.Encoding.UTF8.GetString(secretKeyBytes) != secretKey)
         {
             return TokenResult.Failure(new List<AuthError>()
             {

@@ -7,31 +7,27 @@ namespace MonolithModularNET.Auth;
 
 public class JwtService: IJwtService
 {
-    private readonly AuthJwtTokenOptions _options;
-
-    public JwtService(AuthJwtTokenOptions options)
-    {
-        _options = options;
-    }
-
     public void Dispose()
     {
         GC.SuppressFinalize(this);
     }
 
-    public string Encoding(string jti, List<Claim> claims)
+    public string Encoding(CreateJwtTokenOptions tokenOptions)
     {
-        var overrideClaims = new List<Claim>() { new Claim(JwtRegisteredClaimNames.Jti, jti) };
-        overrideClaims.AddRange(claims);
-        
-        var securityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_options.SecretKey!));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        var expiredAt = DateTime.UtcNow.AddMinutes(_options.ExpiresIn);
+        ArgumentNullException.ThrowIfNull(tokenOptions.Id);
+        ArgumentNullException.ThrowIfNull(tokenOptions.SecretKey);
+        ArgumentNullException.ThrowIfNull(tokenOptions.ExpiredAt);
 
-        var token = new JwtSecurityToken(_options.Issuer,
-            _options.Issuer,
+        var overrideClaims = new List<Claim>() { new (JwtRegisteredClaimNames.Jti, tokenOptions.Id) };
+        overrideClaims.AddRange(tokenOptions.Claims);
+        
+        var securityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenOptions.SecretKey!));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(tokenOptions.Issuer,
+            tokenOptions.Issuer,
             overrideClaims,
-            expires: expiredAt,
+            expires: tokenOptions.ExpiredAt,
             signingCredentials: credentials);
         
         
