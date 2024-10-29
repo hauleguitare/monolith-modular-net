@@ -4,10 +4,5 @@ using MonolithModularNET.Auth.Core;
 
 namespace MonolithModularNET.Auth;
 
-public class AuthDbContext: IdentityDbContext<AuthUser, AuthRole, string>
-{
-    public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
-    {
-        
-    }
-}
+public class AuthDbContext(DbContextOptions<AuthDbContext> options)
+    : IdentityDbContext<AuthUser, AuthRole, string>(options);
