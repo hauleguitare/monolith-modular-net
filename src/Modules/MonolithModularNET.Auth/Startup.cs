@@ -66,8 +66,8 @@ public static class Startup
     
     public static IServiceCollection AddMonolithModularNetAuth(this IServiceCollection services,  Action<DbContextOptionsBuilder>? optionsAction = null)
     {
-        // Add AuthContext
-        services.AddDbContext<AuthContext>(optionsAction);
+        // Add AuthDbContext
+        services.AddDbContext<AuthDbContext>(optionsAction);
         
         
         // Add Identity Core
@@ -76,7 +76,7 @@ public static class Startup
             .AddUserManager<AuthUserManager>()
             .AddUserStore<AuthUserStore>()
             .AddRoleStore<AuthRoleStore>()
-            .AddEntityFrameworkStores<AuthContext>();
+            .AddEntityFrameworkStores<AuthDbContext>();
         
         // Add AuthRole
         services.TryAddScoped<IRoleValidator<AuthRole>, RoleValidator<AuthRole>>();
@@ -84,7 +84,7 @@ public static class Startup
         services.TryAddScoped<IUserClaimsPrincipalFactory<AuthUser>, UserClaimsPrincipalFactory<AuthUser, AuthRole>>();
         
         // Add Auth Unit Of Work
-        services.TryAddScoped<IUnitOfWork<AuthContext, IDbContextTransaction>, AuthUnitOfWork>();
+        services.TryAddScoped<IUnitOfWork<AuthDbContext, IDbContextTransaction>, AuthUnitOfWork>();
         // Add AuthService
         services.TryAddScoped<ISignUpService<AuthUser, AuthRole>, SignUpService>();
         // Add JWTService

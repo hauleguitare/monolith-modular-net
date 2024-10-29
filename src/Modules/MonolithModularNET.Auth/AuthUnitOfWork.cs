@@ -3,11 +3,11 @@ using MonolithModularNET.Extensions.Abstractions;
 
 namespace MonolithModularNET.Auth;
 
-public class AuthUnitOfWork: IUnitOfWork<AuthContext, IDbContextTransaction>
+public class AuthUnitOfWork: IUnitOfWork<AuthDbContext, IDbContextTransaction>
 {
-    public AuthContext Context { get; set; }
+    public AuthDbContext Context { get; set; }
     
-    public AuthUnitOfWork(AuthContext context)
+    public AuthUnitOfWork(AuthDbContext context)
     {
         Context = context;
     }

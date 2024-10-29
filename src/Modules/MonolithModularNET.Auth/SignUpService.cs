@@ -9,7 +9,7 @@ namespace MonolithModularNET.Auth;
 public class SignUpService(
     UserManager<AuthUser> userManager,
     RoleManager<AuthRole> roleManager,
-    IUnitOfWork<AuthContext, IDbContextTransaction> unitOfWork)
+    IUnitOfWork<AuthDbContext, IDbContextTransaction> unitOfWork)
     : ISignUpService<AuthUser, AuthRole>
 {
     public async Task<AuthResult> SignUpAsync(SignUpRequest request, CancellationToken cancellationToken = default(CancellationToken))

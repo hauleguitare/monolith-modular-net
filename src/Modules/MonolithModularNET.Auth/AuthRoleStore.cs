@@ -6,7 +6,7 @@ namespace MonolithModularNET.Auth;
 
 public class AuthRoleStore: RoleStore<AuthRole>
 {
-    public AuthRoleStore(AuthContext context, IdentityErrorDescriber? describer = null) : base(context, describer)
+    public AuthRoleStore(AuthDbContext dbContext, IdentityErrorDescriber? describer = null) : base(dbContext, describer)
     {
         AutoSaveChanges = false;
     }

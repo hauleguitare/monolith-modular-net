@@ -8,11 +8,11 @@ namespace MonolithModularNET.Auth;
 
 public class AuthUserStore: UserStore<AuthUser>
 {
-    private readonly AuthContext _context;
+    private readonly AuthDbContext _dbContext;
     
-    public AuthUserStore(AuthContext context, IdentityErrorDescriber describer = null) : base(context, describer)
+    public AuthUserStore(AuthDbContext dbContext, IdentityErrorDescriber describer = null) : base(dbContext, describer)
     {
-        _context = context;
+        _dbContext = dbContext;
         AutoSaveChanges = false;
     }
 
@@ -30,7 +30,7 @@ public class AuthUserStore: UserStore<AuthUser>
             throw new ArgumentException("ValueCannotBeNullOrEmpty", nameof(roleName));
         }
 
-        var roleEntity = await _context.Roles.SingleOrDefaultAsync(r => !string.IsNullOrEmpty(r.Name) && r.Name.ToUpper() == roleName.ToUpper(), cancellationToken: cancellationToken);
+        var roleEntity = await _dbContext.Roles.SingleOrDefaultAsync(r => !string.IsNullOrEmpty(r.Name) && r.Name.ToUpper() == roleName.ToUpper(), cancellationToken: cancellationToken);
         if (roleEntity == null)
         {
             throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
@@ -38,6 +38,6 @@ public class AuthUserStore: UserStore<AuthUser>
         }
 
         var ur = new IdentityUserRole<string>() { UserId = user.Id, RoleId = roleEntity.Id };
-        _context.UserRoles.Add(ur);
+        _dbContext.UserRoles.Add(ur);
     }
 }
