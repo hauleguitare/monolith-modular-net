@@ -5,7 +5,6 @@ namespace MonolithModularNET.Auth;
 
 public static class AuthApiHandler
 {
-    
     public static async Task<IResult> HandleSignUpAsync(SignUpRequest request, ISignUpService<AuthUser, AuthRole> service)
     {
         var result = await service.SignUpAsync(request);
@@ -25,6 +24,7 @@ public static class AuthApiHandler
         return Results.Ok(AuthResponse.Success(result.Data));
     }
 
+    [RoleBasedAuthorize("test:read")]
     public static async Task<IResult> HandleRefreshAsync(RefreshTokenRequest request, HttpContext context,
         ISignInService<AuthUser> service)
     {

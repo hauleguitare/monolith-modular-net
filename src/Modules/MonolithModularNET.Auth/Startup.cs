@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -98,6 +99,9 @@ public static class Startup
         services.TryAddScoped<ISignInService<AuthUser>, SignInService>();
         // Add Http Context Accessor
         services.AddHttpContextAccessor();
+        
+        // Add Roles Claim transform
+        services.AddTransient<IClaimsTransformation, RolePermissionClaimsTransform>();
         
         return services;
     }

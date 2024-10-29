@@ -97,6 +97,7 @@ public class SignInService: ISignInService<AuthUser>
         {
             var role = await _roleManager.FindByNameAsync(roleName);
             
+            
             claims.Add(new Claim(ClaimTypes.Role, role!.Id));
         }
         return claims;
