@@ -5,7 +5,7 @@ namespace MonolithModularNET.Auth.Core;
 
 public interface IJwtService: IDisposable
 {
-    public string Encoding(string jti, List<Claim> claims);
+    public string Encoding(CreateJwtTokenOptions tokenOptions);
 
     public JwtSecurityToken Decoding(string token);
 }

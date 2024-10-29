@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -63,20 +64,23 @@ public static class Startup
 
         return services;
     }
-    
-    public static IServiceCollection AddMonolithModularNetAuth(this IServiceCollection services,  Action<DbContextOptionsBuilder>? optionsAction = null)
+
+    public static IServiceCollection AddMonolithModularNetAuthContext(this IServiceCollection services,
+        Action<DbContextOptionsBuilder>? optionsAction = null)
     {
-        // Add AuthContext
-        services.AddDbContext<AuthContext>(optionsAction);
-        
-        
+        // Add AuthDbContext
+        return services.AddDbContext<AuthDbContext>(optionsAction);
+    }
+    
+    public static IServiceCollection AddMonolithModularNetAuth(this IServiceCollection services)
+    {
         // Add Identity Core
         services.AddIdentityCore<AuthUser>()
             .AddRoles<AuthRole>()
             .AddUserManager<AuthUserManager>()
             .AddUserStore<AuthUserStore>()
             .AddRoleStore<AuthRoleStore>()
-            .AddEntityFrameworkStores<AuthContext>();
+            .AddEntityFrameworkStores<AuthDbContext>();
         
         // Add AuthRole
         services.TryAddScoped<IRoleValidator<AuthRole>, RoleValidator<AuthRole>>();
@@ -84,7 +88,7 @@ public static class Startup
         services.TryAddScoped<IUserClaimsPrincipalFactory<AuthUser>, UserClaimsPrincipalFactory<AuthUser, AuthRole>>();
         
         // Add Auth Unit Of Work
-        services.TryAddScoped<IUnitOfWork<AuthContext, IDbContextTransaction>, AuthUnitOfWork>();
+        services.TryAddScoped<IUnitOfWork<AuthDbContext, IDbContextTransaction>, AuthUnitOfWork>();
         // Add AuthService
         services.TryAddScoped<ISignUpService<AuthUser, AuthRole>, SignUpService>();
         // Add JWTService
@@ -95,6 +99,9 @@ public static class Startup
         services.TryAddScoped<ISignInService<AuthUser>, SignInService>();
         // Add Http Context Accessor
         services.AddHttpContextAccessor();
+        
+        // Add Roles Claim transform
+        services.AddTransient<IClaimsTransformation, RolePermissionClaimsTransform>();
         
         return services;
     }
@@ -122,7 +129,7 @@ public static class Startup
             {
                 throw new ArgumentException($"{nameof(jwtTokenOptions.SecretKey)} must be 64 bytes length");
             }
-            
+
             services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
             {
                 SecretKey = jwtTokenOptions.SecretKey,

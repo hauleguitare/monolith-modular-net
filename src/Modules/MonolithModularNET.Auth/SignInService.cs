@@ -75,30 +75,57 @@ public class SignInService: ISignInService<AuthUser>
         }
 
         var refreshTokenQuery = new CacheQueryBuilder().Append(AuthCacheSchemas.RefreshTokenUser).Append(userId).ToString();
-        var roleUserQuery = new CacheQueryBuilder().Append(AuthCacheSchemas.UserRoles).Append(userId).ToString();
         await _cacheService.RemoveAsync(refreshTokenQuery, cancellationToken);
-        await _cacheService.RemoveAsync(roleUserQuery, cancellationToken);
         
         return AuthResult.Success();
     }
-    
 
-    private async Task<AuthResult> CredentialAsync(AuthUser user, CancellationToken cancellationToken = default)
+    private async Task<ICollection<Claim>> GrantClaimsAsync(AuthUser user)
     {
-        
         // Refresh token operation
         var claims = new List<Claim>()
         {
             new (ClaimTypes.Email, user.Email!),
             new (ClaimTypes.NameIdentifier, user.Id),
         };
+        
+        // User roles operation
 
+        var roleNames = await _userManager.GetRolesAsync(user);
+        
+        foreach (var roleName in roleNames)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+            
+            
+            claims.Add(new Claim(ClaimTypes.Role, role!.Id));
+        }
+        return claims;
+    }
+    
+    private async Task<AuthResult> CredentialAsync(AuthUser user, CancellationToken cancellationToken = default)
+    {
+        var claims = await GrantClaimsAsync(user);
+        
+        // Generate token
         var jti = Guid.NewGuid().ToString();
-        var token = _jwtService.Encoding(jti, claims);
+        var token = _jwtService.Encoding(new CreateJwtTokenOptions()
+        {
+            Id = jti,
+            Claims = claims,
+            ExpiredAt = DateTime.UtcNow.AddMinutes(_options.ExpiresIn),
+            SecretKey = _options.SecretKey,
+            Issuer = _options.Issuer
+        });
         var expiredAt = DateTime.UtcNow.AddDays(7);
         var expiresTime = expiredAt - DateTime.UtcNow;
         
-        var rfTokenResult = _refreshTokenService.GenerateRefreshToken(jti, _options.SecretKey!, expiredAt);
+        var rfTokenResult = _refreshTokenService.Encoding(new GenerateRefreshTokenOptions()
+        {
+            Jti = jti,
+            SecretKey =  _options.SecretKey!,
+             ExpiredAt =  expiredAt
+        });
 
         if (!rfTokenResult.Succeed)
         {
@@ -106,20 +133,6 @@ public class SignInService: ISignInService<AuthUser>
         }
         await SetRefreshTokenCacheAsync(user.Id, rfTokenResult.Token!, expiresTime, cancellationToken);
         
-        
-        // User roles operation
-
-        var roleNames = await _userManager.GetRolesAsync(user);
-        var roleIds = new List<string>();
-        
-        foreach (var roleName in roleNames)
-        {
-            var role = await _roleManager.FindByNameAsync(roleName);
-            
-            roleIds.Add(role!.Id);
-        }
-
-        await SetRoleCacheAsync(user.Id, roleIds, expiresTime, cancellationToken);
 
         return AuthResult.Success(new {AccessToken = token, RefreshToken = rfTokenResult.Token});
     }
@@ -156,7 +169,7 @@ public class SignInService: ISignInService<AuthUser>
             return AuthResult.Failure([describer.InvalidToken()]);
         }
         
-        var validTokenResult = _refreshTokenService.ValidateRefreshToken(decodeToken.Id, _options.SecretKey!, refreshToken);
+        var validTokenResult = _refreshTokenService.Decoding(decodeToken.Id, _options.SecretKey!, refreshToken);
 
         if (!validTokenResult.Succeed)
         {
@@ -197,24 +210,7 @@ public class SignInService: ISignInService<AuthUser>
             .Append(userId).ToString();
         await _cacheService.SetAsync(key, refreshToken, expiresTime, cancellationToken);
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="userId">Identity of user</param>
-    /// <param name="roles">role names user has</param>
-    /// <param name="expiresTime">expires time</param>
-    /// <param name="cancellationToken">cancellation token</param>
-    private async Task SetRoleCacheAsync(string userId, ICollection<string> roles, TimeSpan expiresTime,
-        CancellationToken cancellationToken = default)
-    {
-        var cacheQueryBuilder = new CacheQueryBuilder()
-            .Append(AuthCacheSchemas.UserRoles).Append(userId);
-        
-        var key = cacheQueryBuilder.ToString();
-
-        await _cacheService.SetAsync(key, roles, expiresTime, cancellationToken);
-    }
+    
     
     private async Task<string?> FindRefreshTokenAsync(string userId)
     {
