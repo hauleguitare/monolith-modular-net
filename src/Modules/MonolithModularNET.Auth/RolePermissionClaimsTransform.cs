@@ -41,7 +41,17 @@ public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IA
                         ConcurrencyStamp = role.ConcurrencyStamp,
                         NormalizedName = role.NormalizedName,
                         IsDefault = role.IsDefault,
-                        Claims = roleClaims.Where(e => e.Type == AuthClaimTypes.Permission).ToList()
+                        Claims = roleClaims.Where(e => e.Type == AuthClaimTypes.Permission).Select(e => new CacheAuthClaim()
+                        {
+                            Value = e.Value,
+                            Type = e.Type,
+                            ValueType = e.ValueType,
+                            Properties = e.Properties,
+                            Issuer = e.Issuer,
+                            Subject = e.Subject,
+                            OriginalIssuer = e.OriginalIssuer
+                            
+                        }).ToList()
                     };
                     
                     await AddCacheIfNullAsync(role, roleClaims);
@@ -50,7 +60,7 @@ public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IA
               
                 foreach (var roleClaim in cacheRole.Claims)
                 {
-                    claimsIdentity.AddClaim(AuthClaimTypes.Permission, roleClaim.Value);
+                    claimsIdentity.AddClaim(AuthClaimTypes.Permission, roleClaim.Value!);
                 }
 
             }
@@ -76,7 +86,17 @@ public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IA
                 ConcurrencyStamp = role.ConcurrencyStamp,
                 NormalizedName = role.NormalizedName,
                 IsDefault = role.IsDefault,
-                Claims = claims
+                Claims = claims.Select(e => new CacheAuthClaim()
+                {
+                    Value = e.Value,
+                    Type = e.Type,
+                    ValueType = e.ValueType,
+                    Properties = e.Properties,
+                    Issuer = e.Issuer,
+                    Subject = e.Subject,
+                    OriginalIssuer = e.OriginalIssuer
+                            
+                }).ToList()
             };
 
             await cacheService.SetAsync(query.ToString(), dataCached, TimeSpan.FromHours(6), cancellationToken);
