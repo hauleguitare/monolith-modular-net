@@ -9,6 +9,8 @@ namespace MonolithModularNET.Auth;
 
 public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IAuthCacheService cacheService) : IClaimsTransformation
 {
+    private const int ExpiresInHours = 24;
+
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
         ClaimsIdentity claimsIdentity = new ClaimsIdentity();
@@ -99,7 +101,7 @@ public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IA
                 }).ToList()
             };
 
-            await cacheService.SetAsync(query.ToString(), dataCached, TimeSpan.FromHours(6), cancellationToken);
+            await cacheService.SetAsync(query.ToString(), dataCached, TimeSpan.FromHours(ExpiresInHours), cancellationToken);
         }
     }
 }

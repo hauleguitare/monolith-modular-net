@@ -14,7 +14,10 @@ internal static class MonolithModularNetAuthBootstrapper
     internal static IServiceCollection AddAuthBootstrapper(this IServiceCollection services,
         IConfiguration configuration, IWebHostEnvironment environment)
     {
-        ArgumentNullException.ThrowIfNull(configuration["Security:JwtSecretKey"]);
+        var securitySettings = new SecuritySettings();
+        configuration.GetSection(nameof(SecuritySettings)).Bind(securitySettings);
+        
+        ArgumentNullException.ThrowIfNull(securitySettings.JwtSecretKey);
 
         var cacheSettings = new CacheSettings();
         configuration.GetSection(nameof(CacheSettings)).Bind(cacheSettings);
@@ -43,9 +46,9 @@ internal static class MonolithModularNetAuthBootstrapper
             }
         })
             .AddMonolithModularNetAuth()
-            .AddAuthJwtToken(options =>
+            .AddAuthJwtTokenOptions(options =>
             {
-                options.SecretKey = configuration["Security:JwtSecretKey"];
+                options.SecretKey = securitySettings.JwtSecretKey;
                 options.ExpiresIn = 60;
             });
         
@@ -65,7 +68,7 @@ internal static class MonolithModularNetAuthBootstrapper
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey =
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Security:JwtSecretKey"]!)),
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securitySettings.JwtSecretKey)),
             };
         });
         

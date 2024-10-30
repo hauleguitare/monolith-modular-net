@@ -106,7 +106,7 @@ public static class Startup
         return services;
     }
 
-    public static IServiceCollection AddAuthJwtToken(this IServiceCollection services,
+    public static IServiceCollection AddAuthJwtTokenOptions(this IServiceCollection services,
         Action<AuthJwtTokenOptions>? options = null)
     {
         var jwtTokenOptions = new AuthJwtTokenOptions();
