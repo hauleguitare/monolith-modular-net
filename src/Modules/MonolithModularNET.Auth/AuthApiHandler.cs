@@ -24,7 +24,6 @@ public static class AuthApiHandler
         return Results.Ok(AuthResponse.Success(result.Data));
     }
 
-    [RoleBasedAuthorize("test:read")]
     public static async Task<IResult> HandleRefreshAsync(RefreshTokenRequest request, HttpContext context,
         ISignInService<AuthUser> service)
     {
