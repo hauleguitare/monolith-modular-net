@@ -17,11 +17,7 @@ public static class AuthApiHandler
     {
         var result = await service.SignInAsync(request.Email, request.Password);
 
-        if (!result.Succeed)
-        {
-            return Results.BadRequest(AuthResponse.Failure(result.Errors!));
-        }
-        return Results.Ok(AuthResponse.Success(result.Data));
+        return !result.Succeed ? Results.BadRequest(AuthResponse.Failure(result.Errors!)) : Results.Ok(AuthResponse.Success(result.Data));
     }
 
     public static async Task<IResult> HandleRefreshAsync(RefreshTokenRequest request, HttpContext context,
@@ -29,12 +25,7 @@ public static class AuthApiHandler
     {
         var result = await service.RefreshAsync(request.RefreshToken);
             
-        if (!result.Succeed)
-        {
-            return Results.BadRequest(AuthResponse.Failure(result.Errors!));
-        }
-
-        return Results.Ok(AuthResponse.Success(result.Data));
+        return !result.Succeed ? Results.BadRequest(AuthResponse.Failure(result.Errors!)) : Results.Ok(AuthResponse.Success(result.Data));
     }
     
     public static async Task<IResult> HandleLogoutAsync(HttpContext context,
@@ -42,11 +33,6 @@ public static class AuthApiHandler
     {
         var result = await service.LogoutAsync();
         
-        if (!result.Succeed)
-        {
-            return Results.BadRequest(AuthResponse.Failure(result.Errors!));
-        }
-        
-        return Results.Ok(AuthResponse.Success(result.Data));
+        return !result.Succeed ? Results.BadRequest(AuthResponse.Failure(result.Errors!)) : Results.Ok(AuthResponse.Success(result.Data));
     }
 }
