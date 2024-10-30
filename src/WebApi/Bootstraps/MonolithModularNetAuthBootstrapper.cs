@@ -1,5 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MonolithModularNET.Auth;
+using MonolithModularNET.Auth.Core;
+using WebApi.Settings;
 
 namespace WebApi.Bootstraps;
 
@@ -9,6 +15,22 @@ internal static class MonolithModularNetAuthBootstrapper
         IConfiguration configuration, IWebHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(configuration["Security:JwtSecretKey"]);
+
+        var cacheSettings = new CacheSettings();
+        configuration.GetSection(nameof(CacheSettings)).Bind(cacheSettings);
+        
+        ArgumentNullException.ThrowIfNull(cacheSettings.ConnectionString);
+        ArgumentNullException.ThrowIfNull(cacheSettings.InstanceName);
+        
+        // add cache service
+        services.AddMonolithModularNetAuthCache(options =>
+        {
+            options.ConnectionString = cacheSettings.ConnectionString;
+            options.InstanceName = $"{cacheSettings.InstanceName}:auth:";
+        });
+
+        
+        // Add auth module.
         services.AddMonolithModularNetAuthContext(opts =>
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -26,6 +48,38 @@ internal static class MonolithModularNetAuthBootstrapper
                 options.SecretKey = configuration["Security:JwtSecretKey"];
                 options.ExpiresIn = 60;
             });
+        
+        
+        // Add authentication
+        services.AddAuthentication(conf =>
+        {
+            conf.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+
+        }).AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = !environment.IsDevelopment();
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = !environment.IsDevelopment(),
+                ValidateAudience = !environment.IsDevelopment(),
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Security:JwtSecretKey"]!)),
+            };
+        });
+        
+        // Add authorization
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(nameof(RoleBasedRequirement), policy =>
+            {
+                policy.Requirements.Add(new RoleBasedRequirement());
+            });
+        });
+
+        services.AddSingleton<IAuthorizationHandler, RoleBasedHandler>();
+        
         return services;
     }
 }
