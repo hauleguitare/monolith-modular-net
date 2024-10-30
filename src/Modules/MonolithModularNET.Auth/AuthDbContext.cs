@@ -60,29 +60,29 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
             {
                 Id = 1,
                 RoleId = "owner",
-                ClaimType = "v1_classic_token:create",
-                ClaimValue = AuthClaimTypes.Permission
+                ClaimValue = "v1_classic_token:create",
+                ClaimType = AuthClaimTypes.Permission
             },
             new()
             {
                 Id = 2,
                 RoleId = "owner",
-                ClaimType = "v1_classic_token:update",
-                ClaimValue = AuthClaimTypes.Permission
+                ClaimValue = "v1_classic_token:update",
+                ClaimType = AuthClaimTypes.Permission
             },
             new()
             {
                 Id = 3,
                 RoleId = "owner",
-                ClaimType = "v1_classic_token:delete",
-                ClaimValue = AuthClaimTypes.Permission
+                ClaimValue = "v1_classic_token:delete",
+                ClaimType = AuthClaimTypes.Permission
             },
             new()
             {
                 Id = 4,
                 RoleId = "owner",
-                ClaimType = "v1_classic_token:view_all",
-                ClaimValue = AuthClaimTypes.Permission
+                ClaimValue = "v1_classic_token:view_all",
+                ClaimType = AuthClaimTypes.Permission
             }
         };
 

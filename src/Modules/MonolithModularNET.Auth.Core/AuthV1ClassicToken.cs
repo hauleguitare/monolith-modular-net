@@ -1,6 +1,8 @@
+using MonolithModularNET.Extensions.Abstractions;
+
 namespace MonolithModularNET.Auth.Core;
 
-public class AuthV1ClassicToken
+public class AuthV1ClassicToken: IEntity, IAggregateRoot
 {
     public string Token { get; set; } = null!;
     

@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MonolithModularNET.Auth.Core;
 
-public class RoleBasedAuthorizeAttribute(string resourceAction) : AuthorizeAttribute, IAuthorizationRequirementData
+public class RoleBasedAuthorizeAttribute(ICollection<string> resourceActions) : AuthorizeAttribute, IAuthorizationRequirementData
 {
-    private string ResourceAction { get; set; } = resourceAction;
+    private ICollection<string> ResourceActions { get; set; } = resourceActions;
 
     public IEnumerable<IAuthorizationRequirement> GetRequirements()
     {
-        yield return new RoleBasedRequirement(ResourceAction);
+        yield return new RoleBasedRequirement(ResourceActions);
     }
 }
