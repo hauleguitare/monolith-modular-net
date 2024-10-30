@@ -28,7 +28,7 @@ public abstract class CacheService<TDistributeCache>(TDistributeCache distribute
         return _distributeCache.GetString(key);
     }
 
-    public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
+    public virtual async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
     {
         var rawData = await _distributeCache.GetStringAsync(key, cancellationToken);
 
@@ -43,13 +43,14 @@ public abstract class CacheService<TDistributeCache>(TDistributeCache distribute
         return result;
     }
 
-    public async Task<string?> GetAsync(string key, CancellationToken cancellationToken = default)
+    public virtual async Task<string?> GetAsync(string key, CancellationToken cancellationToken = default)
     {
         return await _distributeCache.GetStringAsync(key, cancellationToken);
     }
+    
 
 
-    public bool Set(string key, object value, TimeSpan expirationTimeSpan)
+    public virtual bool Set(string key, object value, TimeSpan expirationTimeSpan)
     {
         try
         {
@@ -66,7 +67,20 @@ public abstract class CacheService<TDistributeCache>(TDistributeCache distribute
         }
     }
 
-    public async Task<bool> SetAsync(string key, object value, TimeSpan expirationTimeSpan, CancellationToken cancellationToken = default)
+    public async Task<bool> SetAsync(string key, byte[] bytes, TimeSpan expirationTimeSpan, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await _distributeCache.SetAsync(key, bytes, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan), cancellationToken);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public virtual async Task<bool> SetAsync(string key, object value, TimeSpan expirationTimeSpan, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -83,7 +97,7 @@ public abstract class CacheService<TDistributeCache>(TDistributeCache distribute
         }
     }
 
-    public bool Set(string key, string value, TimeSpan expirationTimeSpan)
+    public virtual bool Set(string key, string value, TimeSpan expirationTimeSpan)
     {
         try
         {
@@ -96,7 +110,20 @@ public abstract class CacheService<TDistributeCache>(TDistributeCache distribute
         }
     }
 
-    public async Task<bool> SetAsync(string key, string value, TimeSpan expirationTimeSpan, CancellationToken cancellationToken = default)
+    public bool Set(string key, byte[] bytes, TimeSpan expirationTimeSpan)
+    {
+        try
+        {
+            _distributeCache.Set(key, bytes, new DistributedCacheEntryOptions().SetSlidingExpiration(expirationTimeSpan));
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public virtual async Task<bool> SetAsync(string key, string value, TimeSpan expirationTimeSpan, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -110,12 +137,12 @@ public abstract class CacheService<TDistributeCache>(TDistributeCache distribute
     }
 
 
-    public void Remove(string key)
+    public virtual void Remove(string key)
     {
         _distributeCache.Remove(key);
     }
 
-    public async Task<bool> RemoveAsync(string key, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> RemoveAsync(string key, CancellationToken cancellationToken = default)
     {
         try
         {
