@@ -1,5 +1,4 @@
 using MonolithModularNET.Auth;
-using MonolithModularNET.Auth.Core;
 using WebApi.Bootstraps;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,8 +19,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
-    app.MapGet("api/hello-world", [RoleBasedAuthorize("greeting:read")] () => "Hello World");
 }
 
 app.UseAuthentication();
