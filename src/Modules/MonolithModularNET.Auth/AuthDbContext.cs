@@ -1,11 +1,17 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MonolithModularNET.Auth.Core;
+using MonolithModularNET.Extensions.Abstractions;
 
 namespace MonolithModularNET.Auth;
 
-public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHasher<AuthUser> passwordHasher)
+public class AuthDbContext(
+    DbContextOptions<AuthDbContext> options,
+    IPasswordHasher<AuthUser> passwordHasher,
+    IHttpContextAccessor httpContextAccessor)
     : IdentityDbContext<AuthUser, AuthRole, string>(options)
 {
     public DbSet<AuthV1ClassicToken> AuthV1ClassicTokens { get; set; }
@@ -13,21 +19,20 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
         base.OnModelCreating(modelBuilder);
-        
+
 
         // AuthV1ClassicToken builder
         modelBuilder.Entity<AuthV1ClassicToken>(builder =>
         {
             builder.HasKey(e => e.Token).HasName("AuthV1ClassicToken_pk");
-            
+
             builder.OwnsOne(e => e.Metadata)
                 .Property(p => p.ExpiredAt).HasColumnName("Metadata_ExpiredAt");
-            
+
             builder.OwnsOne(e => e.Metadata)
                 .Property(p => p.IsActive).HasColumnName("Metadata_IsActive").HasDefaultValue(false);
-            
+
             builder.HasMany(d => d.Claims)
                 .WithOne()
                 .HasForeignKey(d => d.Token)
@@ -35,7 +40,6 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
                 .HasConstraintName("AuthV1ClassicTokenClaim_Token_fk");
 
             builder.IsAuditable();
-            
         });
 
         modelBuilder.HasSequence<int>("auth_v1_classic_token_claim_id_seq").IncrementsBy(1);
@@ -46,13 +50,13 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
 
             builder.Property(e => e.Id).HasDefaultValueSql("nextval('auth_v1_classic_token_claim_id_seq'::regclass)");
         });
-        
+
         SeedRootUser(modelBuilder);
-        
+
         SeedRoles(modelBuilder);
-        
+
         SeedRoleClaims(modelBuilder);
-        
+
         SeedUserRole(modelBuilder);
     }
 
@@ -132,7 +136,7 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
     {
         var roles = new List<AuthRole>()
         {
-            new ()
+            new()
             {
                 Id = "owner",
                 Name = "Owner",
@@ -140,7 +144,7 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 Priority = 0
             },
-            new ()
+            new()
             {
                 Id = "super_administrator",
                 Name = "Super Administrator",
@@ -148,7 +152,7 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 Priority = 1
             },
-            new ()
+            new()
             {
                 Id = "moderator",
                 Name = "Moderator",
@@ -156,7 +160,7 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 Priority = 2
             },
-            new ()
+            new()
             {
                 Id = "new_user",
                 Name = "New User",
@@ -169,5 +173,96 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
         modelBuilder.Entity<AuthRole>().HasData(roles);
 
         return modelBuilder;
+    }
+
+
+    private void BeforeSaveChangesAsync()
+    {
+        var trackEntities = ChangeTracker.Entries<IAuditableEntity>().ToList();
+        foreach (var entityEntry in trackEntities)
+        {
+            string? userId;
+            switch (entityEntry.State)
+            {
+                case EntityState.Added:
+                    if (!entityEntry.Entity.CreatedAt.HasValue)
+                    {
+                        entityEntry.Entity.UpdateCreatedAt();
+                    }
+
+                    if (string.IsNullOrEmpty(entityEntry.Entity.CreatedBy))
+                    {
+                        if (httpContextAccessor.HttpContext is null)
+                        {
+                            ArgumentNullException.ThrowIfNull(httpContextAccessor.HttpContext);
+                        }
+
+
+                        if (httpContextAccessor.HttpContext?.User is null)
+                        {
+                            ArgumentNullException.ThrowIfNull(httpContextAccessor.HttpContext?.User);
+                        }
+
+                        userId = httpContextAccessor.HttpContext.User.FindFirst(e => e.Type == ClaimTypes.NameIdentifier)
+                            ?.Value;
+
+                        if (string.IsNullOrEmpty(userId))
+                        {
+                            ArgumentNullException.ThrowIfNull(userId);
+                        }
+
+                        entityEntry.Entity.AddCreatedBy(userId);
+                    }
+
+                    break;
+                
+                
+                case EntityState.Modified:
+                    entityEntry.Entity.UpdateModifiedAt();
+
+                    if (httpContextAccessor.HttpContext is null)
+                    {
+                        ArgumentNullException.ThrowIfNull(httpContextAccessor.HttpContext);
+                    }
+
+
+                    if (httpContextAccessor.HttpContext?.User is null)
+                    {
+                        ArgumentNullException.ThrowIfNull(httpContextAccessor.HttpContext?.User);
+                    }
+
+                    userId = httpContextAccessor.HttpContext.User.FindFirst(e => e.Type == ClaimTypes.NameIdentifier)
+                        ?.Value;
+
+                    if (string.IsNullOrEmpty(userId))
+                    {
+                        ArgumentNullException.ThrowIfNull(userId);
+                    }
+
+                    entityEntry.Entity.AddModifiedBy(userId);
+
+                    break;
+            }
+        }
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        BeforeSaveChangesAsync();
+
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
+    {
+        BeforeSaveChangesAsync();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        BeforeSaveChangesAsync();
+        return base.SaveChangesAsync(cancellationToken);
     }
 }

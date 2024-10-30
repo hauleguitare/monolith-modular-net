@@ -17,6 +17,33 @@ public abstract class AuditableEntity<TId>: BaseEntity<TId>, IAuditableEntity
     public virtual DateTimeOffset? ModifiedAt { get; set; }
     public virtual string? CreatedBy { get; set; }
     public virtual string? ModifiedBy { get; set; }
+    
+    public virtual IAuditableEntity AddCreatedBy(string createdBy)
+    {
+        CreatedBy = createdBy;
+
+        return this;
+    }
+
+    public virtual IAuditableEntity UpdateCreatedAt()
+    {
+        CreatedAt = DateTimeOffset.UtcNow;
+
+        return this;
+    }
+
+    public virtual IAuditableEntity AddModifiedBy(string modifiedBy)
+    {
+        ModifiedBy = modifiedBy;
+
+        return this;
+    }
+
+    public virtual IAuditableEntity UpdateModifiedAt()
+    {
+        ModifiedAt = DateTimeOffset.UtcNow;
+        return this;
+    }
 }
 
 public interface IAuditableEntity
@@ -40,4 +67,12 @@ public interface IAuditableEntity
     /// Identity ID for modified time entities.
     /// </summary>
     public string? ModifiedBy { get; set; }
+
+    public IAuditableEntity AddCreatedBy(string createdBy);
+
+    public IAuditableEntity UpdateCreatedAt();
+
+    public IAuditableEntity AddModifiedBy(string modifiedBy);
+
+    public IAuditableEntity UpdateModifiedAt();
 }
