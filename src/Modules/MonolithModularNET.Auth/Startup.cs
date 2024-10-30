@@ -18,11 +18,18 @@ public static class Startup
 {
     public static WebApplication MapMonolithModularNetAuthApi(this WebApplication app, [StringSyntax("Route")] string pattern = "/api/auth")
     {
+        var authApiHandler = new AuthApiHandler();
         var group = app.MapGroup(pattern);
-        group.MapPost("/sign-up", AuthApiHandler.HandleSignUpAsync);
-        group.MapPost("/login", AuthApiHandler.HandleLoginAsync);
-        group.MapPost("/refresh", AuthApiHandler.HandleRefreshAsync);
-        group.MapPost("/logout", AuthApiHandler.HandleLogoutAsync);
+        group.MapPost("/sign-up", authApiHandler.HandleSignUpAsync);
+        group.MapPost("/login", authApiHandler.HandleLoginAsync);
+        group.MapPost("/refresh", authApiHandler.HandleRefreshAsync);
+        group.MapPost("/logout", authApiHandler.HandleLogoutAsync);
+
+
+        var authV1ClassicTokenGroup = group.MapGroup("classic-tokens");
+        var authV1ClassicTokenApiHandler = new AuthV1ClassicTokenApiHandler();
+        authV1ClassicTokenGroup.MapPost("/", authV1ClassicTokenApiHandler.CreateAsync).RequirePermissions("v1_classic_token:create");
+        authV1ClassicTokenGroup.MapGet("/", authV1ClassicTokenApiHandler.GetAsync).RequirePermissions("v1_classic_token:read_all");
         return app;
     }
 
@@ -103,10 +110,14 @@ public static class Startup
         // Add Roles Claim transform
         services.AddTransient<IClaimsTransformation, RolePermissionClaimsTransform>();
         
+        // Add Repository
+        services.TryAddScoped(typeof(IAuthReadonlyRepository<>), typeof(AuthReadonlyRepository<>));
+        services.TryAddScoped(typeof(IAuthWriteableRepository<>), typeof(AuthWriteableRepository<>));
+        
         return services;
     }
 
-    public static IServiceCollection AddAuthJwtToken(this IServiceCollection services,
+    public static IServiceCollection AddAuthJwtTokenOptions(this IServiceCollection services,
         Action<AuthJwtTokenOptions>? options = null)
     {
         var jwtTokenOptions = new AuthJwtTokenOptions();

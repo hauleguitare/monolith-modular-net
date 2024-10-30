@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Shared.Cache;
-using OpenIddict.Abstractions;
 
 namespace MonolithModularNET.Auth;
 
 public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IAuthCacheService cacheService) : IClaimsTransformation
 {
+    private const int ExpiresInHours = 24;
+
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
         ClaimsIdentity claimsIdentity = new ClaimsIdentity();
@@ -60,7 +61,7 @@ public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IA
               
                 foreach (var roleClaim in cacheRole.Claims)
                 {
-                    claimsIdentity.AddClaim(AuthClaimTypes.Permission, roleClaim.Value!);
+                    claimsIdentity.AddClaim(new Claim(AuthClaimTypes.Permission, roleClaim.Value!));
                 }
 
             }
@@ -99,7 +100,7 @@ public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IA
                 }).ToList()
             };
 
-            await cacheService.SetAsync(query.ToString(), dataCached, TimeSpan.FromHours(6), cancellationToken);
+            await cacheService.SetAsync(query.ToString(), dataCached, TimeSpan.FromHours(ExpiresInHours), cancellationToken);
         }
     }
 }

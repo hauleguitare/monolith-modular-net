@@ -1,5 +1,4 @@
 using MonolithModularNET.Auth;
-using MonolithModularNET.Auth.Core;
 using WebApi.Bootstraps;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,19 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-// Add MonolithModularNET Cache Bootstrapper
-builder.Services.AddCacheBootstrapper(builder.Configuration, builder.Environment);
+builder.Services.AddEndpointsApiExplorer()
+    .AddSwaggerGen();
 
 // Add MonolithModularNET Auth Bootstrapper
 builder.Services.AddAuthBootstrapper(builder.Configuration, builder.Environment);
-
-// Add Authentication
-builder.Services.AddResourceAuthentication(builder.Configuration, builder.Environment);
-
-// Add Authorization
-builder.Services.AddResourceAuthorization(builder.Configuration, builder.Environment);
 
 
 var app = builder.Build();
@@ -28,9 +19,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-
-    app.MapGet("api/hello-world", [RoleBasedAuthorize("greeting:read")] () => "Hello World");
+    app.UseSwagger()
+        .UseSwaggerUI();
 }
 
 app.UseAuthentication();

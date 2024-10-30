@@ -5,11 +5,6 @@ namespace MonolithModularNET.Auth;
 
 public class RoleBasedHandler: AuthorizationHandler<RoleBasedRequirement>
 {
-
-    public RoleBasedHandler()
-    {
-    }
-
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RoleBasedRequirement requirement)
     {
         if (context.User.Identity is null || !context.User.Identity.IsAuthenticated)
@@ -18,13 +13,13 @@ public class RoleBasedHandler: AuthorizationHandler<RoleBasedRequirement>
             return Task.CompletedTask;
         }
 
-        if (string.IsNullOrEmpty(requirement.ResourceAction))
+        if (!requirement.ResourceActions.Any())
         {
             return Task.CompletedTask;
         }
         
 
-        var hasAccessibility = HasAccessibility(context, requirement.ResourceAction);
+        var hasAccessibility = HasAccessibility(context, requirement.ResourceActions);
 
         if (hasAccessibility)
         {
@@ -39,7 +34,7 @@ public class RoleBasedHandler: AuthorizationHandler<RoleBasedRequirement>
     }
 
 
-    private bool HasAccessibility(AuthorizationHandlerContext context, string resourceAction, CancellationToken cancellationToken = default)
+    private bool HasAccessibility(AuthorizationHandlerContext context, ICollection<string> resourceActions, CancellationToken cancellationToken = default)
     {
         var permissions = context.User.FindAll(claims => claims.Type == AuthClaimTypes.Permission).Select(e => e.Value).ToList();
         
@@ -48,6 +43,6 @@ public class RoleBasedHandler: AuthorizationHandler<RoleBasedRequirement>
             return false;
         }
 
-        return permissions.Any(e => e == resourceAction);
+        return permissions.Any(resourceActions.Contains);
     }
 }

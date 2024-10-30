@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace MonolithModularNET.Extensions.Abstractions;
+﻿namespace MonolithModularNET.Extensions.Abstractions;
 
 public interface IResponse<TError> : IResponse<object, TError> where TError : IErrorResponse
 {

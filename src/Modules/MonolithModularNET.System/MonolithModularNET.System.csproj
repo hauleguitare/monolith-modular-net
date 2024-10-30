@@ -5,6 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
     <ItemGroup>
+      <ProjectReference Include="..\MonolithModularNET.System.Core\MonolithModularNET.System.Core.csproj" />
     </ItemGroup>
+
 </Project>

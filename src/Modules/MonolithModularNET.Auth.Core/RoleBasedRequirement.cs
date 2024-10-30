@@ -8,10 +8,10 @@ public class RoleBasedRequirement : IAuthorizationRequirement
     {
     }
     
-    public RoleBasedRequirement(string resourceAction)
+    public RoleBasedRequirement(ICollection<string> resourceActions)
     {
-        ResourceAction = resourceAction;
+        ResourceActions = resourceActions;
     }
-    
-    public string? ResourceAction { get; set; }
+
+    public ICollection<string> ResourceActions { get; set; } = new List<string>();
 }
