@@ -1,9 +1,7 @@
 ﻿namespace MonolithModularNET.Extensions.Abstractions;
 
-public interface IUnitOfWork<TContext, TDbContextTransaction> : IDisposable where TContext : class where TDbContextTransaction: class
+public interface IUnitOfWork<TDbContextTransaction> : IDisposable where TDbContextTransaction: class
 {
-    public TContext Context { get; set; }
-    
     public bool SaveChanges();
     public Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
 
