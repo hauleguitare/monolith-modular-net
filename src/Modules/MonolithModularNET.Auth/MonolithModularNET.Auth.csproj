@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -9,20 +9,18 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
         
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0-rc.2.24474.1">
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
         
-      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0-rc.2.24474.3" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-rc.2.24473.5" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0-rc.2" />
+      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.10" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\MonolithModularNET.Auth.Core\MonolithModularNET.Auth.Core.csproj" />
-      <ProjectReference Include="..\MonolithModularNET.Extensions.Abstractions\MonolithModularNET.Extensions.Abstractions.csproj" />
-      <ProjectReference Include="..\MonolithModularNET.Extensions.Shared\MonolithModularNET.Extensions.Shared.csproj" />
     </ItemGroup>
 
 </Project>
