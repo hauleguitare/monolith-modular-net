@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Shared.Cache;
-using OpenIddict.Abstractions;
 
 namespace MonolithModularNET.Auth;
 
@@ -62,7 +61,7 @@ public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IA
               
                 foreach (var roleClaim in cacheRole.Claims)
                 {
-                    claimsIdentity.AddClaim(AuthClaimTypes.Permission, roleClaim.Value!);
+                    claimsIdentity.AddClaim(new Claim(AuthClaimTypes.Permission, roleClaim.Value!));
                 }
 
             }
