@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MonolithModularNET.Extensions.Shared\MonolithModularNET.Extensions.Shared.csproj" />
+      <ProjectReference Include="..\MonolithModularNET.System.Core\MonolithModularNET.System.Core.csproj" />
+      <ProjectReference Include="..\MonolithModularNET.System\MonolithModularNET.System.csproj" />
+    </ItemGroup>
+
+</Project>
