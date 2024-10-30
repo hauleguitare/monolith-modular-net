@@ -26,9 +26,10 @@ public static class Startup
         group.MapPost("/logout", authApiHandler.HandleLogoutAsync);
 
 
-        var authV1ClassicTokenGroup = group.MapGroup("classic-tokens").RequirePermissions("v1_classic_token:create");
+        var authV1ClassicTokenGroup = group.MapGroup("classic-tokens");
         var authV1ClassicTokenApiHandler = new AuthV1ClassicTokenApiHandler();
-        authV1ClassicTokenGroup.MapPost("/", authV1ClassicTokenApiHandler.CreateAsync);
+        authV1ClassicTokenGroup.MapPost("/", authV1ClassicTokenApiHandler.CreateAsync).RequirePermissions("v1_classic_token:create");
+        authV1ClassicTokenGroup.MapGet("/", authV1ClassicTokenApiHandler.GetAsync).RequirePermissions("v1_classic_token:read_all");
         return app;
     }
 

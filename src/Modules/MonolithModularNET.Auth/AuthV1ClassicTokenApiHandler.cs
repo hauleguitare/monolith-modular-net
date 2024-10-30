@@ -13,17 +13,18 @@ public class AuthV1ClassicTokenApiHandler
         {
             Token = Guid.NewGuid().ToString(),
             Description = request.Description,
-            Metadata = new AuthV1ClassicTokenMetadata()
+            Metadata = request.Metadata,
+            Claims = request.Claims.Select(e => new AuthV1ClassicTokenClaim()
             {
-                ExpiredAt = request.ExpiredAt,
-                IsActive = true
-            }
+                Value = e.Value,
+                ValueType = e.ValueType
+            }).ToList()
         };
 
         await repository.AddAsync(newToken);
 
         await unitOfWork.SaveChangesAsync();
-
+        
         return Results.Ok(AuthResponse.Success(newToken));
     }
 

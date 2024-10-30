@@ -15,6 +15,7 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
     {
         
         base.OnModelCreating(modelBuilder);
+        
 
         // AuthV1ClassicToken builder
         modelBuilder.Entity<AuthV1ClassicToken>(builder =>
@@ -32,6 +33,9 @@ public class AuthDbContext(DbContextOptions<AuthDbContext> options, IPasswordHas
                 .HasForeignKey(d => d.Token)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("AuthV1ClassicTokenClaim_Token_fk");
+
+            builder.IsAuditable();
+            
         });
 
         modelBuilder.HasSequence<int>("auth_v1_classic_token_claim_id_seq").IncrementsBy(1);
