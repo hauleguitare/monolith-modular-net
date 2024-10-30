@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModularNET.Extensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModularNET.Extensions.Shared", "Modules\MonolithModularNET.Extensions.Shared\MonolithModularNET.Extensions.Shared.csproj", "{771FF969-7471-42E9-B5EC-E6143C970C30}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonolithModularNETAuth", "MonolithModularNETAuth", "{684CAF96-56D7-4E35-985D-296DDBCA1397}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonolithModularNET.Auth", "MonolithModularNET.Auth", "{684CAF96-56D7-4E35-985D-296DDBCA1397}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
