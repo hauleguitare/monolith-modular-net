@@ -29,7 +29,8 @@ public static class Startup
         var authV1ClassicTokenGroup = group.MapGroup("classic-tokens");
         var authV1ClassicTokenApiHandler = new AuthV1ClassicTokenApiHandler();
         authV1ClassicTokenGroup.MapPost("/", authV1ClassicTokenApiHandler.CreateAsync).RequirePermissions("v1_classic_token:create");
-        authV1ClassicTokenGroup.MapGet("/", authV1ClassicTokenApiHandler.GetAsync).RequirePermissions("v1_classic_token:read_all");
+        authV1ClassicTokenGroup.MapGet("/", authV1ClassicTokenApiHandler.GetAsync).RequirePermissions("v1_classic_token:view_all");
+        authV1ClassicTokenGroup.MapDelete("/{token}", authV1ClassicTokenApiHandler.DeleteAsync).RequirePermissions("v1_classic_token:delete");
         return app;
     }
 
@@ -104,6 +105,8 @@ public static class Startup
         services.TryAddScoped<IRefreshTokenService, RefreshTokenService>();
         // Add SignInService
         services.TryAddScoped<ISignInService<AuthUser>, SignInService>();
+        // Add AuthV1ClassicTokenService
+        services.TryAddScoped<IAuthV1ClassicTokenService, AuthV1ClassicTokenService>();
         // Add Http Context Accessor
         services.AddHttpContextAccessor();
         
@@ -113,6 +116,16 @@ public static class Startup
         // Add Repository
         services.TryAddScoped(typeof(IAuthReadonlyRepository<>), typeof(AuthReadonlyRepository<>));
         services.TryAddScoped(typeof(IAuthWriteableRepository<>), typeof(AuthWriteableRepository<>));
+        
+        // Add Auto Mapper
+        services.AddAutoMapper((e) =>
+        {
+            e.AddProfile<AuthRequestProfile>();
+            e.AddProfile<AuthResponseProfile>();
+        });
+        
+        // Add Current User Service
+        services.TryAddTransient<ICurrentUserService, CurrentUserService>();
         
         return services;
     }

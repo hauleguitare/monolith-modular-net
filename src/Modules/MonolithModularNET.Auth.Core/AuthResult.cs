@@ -1,20 +1,36 @@
 ﻿namespace MonolithModularNET.Auth.Core;
 
-public class AuthResult
+public class AuthResult : AuthResult<object>
+{
+    public new static AuthResult Success(object? data = null) => new ()
+    {
+        Succeed = true,
+        Data = data
+    };
+    
+    public new static AuthResult Failure(ICollection<AuthError> errors) => new ()
+    {
+        Succeed = false,
+        Errors = errors
+    };
+}
+
+
+public class AuthResult<TResponse> where TResponse : class
 {
     public bool Succeed { get; set; }
     
-    public object? Data { get; set; }
+    public TResponse? Data { get; set; }
     
     public ICollection<AuthError>? Errors { get; set; }
     
-    public static AuthResult Success(object? data = null) => new ()
+    public static AuthResult<TResponse> Success(TResponse? data = null) => new ()
     {
         Succeed = true,
         Data = data
     };
 
-    public static AuthResult Failure(ICollection<AuthError> errors) => new ()
+    public static AuthResult<TResponse> Failure(ICollection<AuthError> errors) => new ()
     {
         Succeed = false,
         Errors = errors

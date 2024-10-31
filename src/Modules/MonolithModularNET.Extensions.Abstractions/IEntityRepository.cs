@@ -3,6 +3,8 @@ namespace MonolithModularNET.Extensions.Abstractions;
 public interface IReadonlyEntityRepository<TEntity> : IRepository where TEntity : class, IAggregateRoot
 {
     public IQueryable<TEntity> AsQueryable();
+
+    public IQueryable<TEntity> AsNoTracking();
     
     public TEntity? FindById(params object?[]? keyValues);
     

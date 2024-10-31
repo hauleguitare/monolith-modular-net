@@ -65,4 +65,12 @@ public class AuthErrorDescriber
         };
     }
     
+    public virtual AuthError NotAuthenticated()
+    {
+        return new AuthError
+        {
+            Code = nameof(NotAuthenticated),
+            Description = "NotAuthenticated"
+        };
+    }
 }
