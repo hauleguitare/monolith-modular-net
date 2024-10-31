@@ -13,6 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\MonolithModularNET.Auth.Shared\MonolithModularNET.Auth.Shared.csproj" />
+      <ProjectReference Include="..\MonolithModularNET.Auth\MonolithModularNET.Auth.Shared\MonolithModularNET.Auth.Shared.csproj" />
       <ProjectReference Include="..\MonolithModularNET.Extensions.Shared\MonolithModularNET.Extensions.Shared.csproj" />
     </ItemGroup>
 

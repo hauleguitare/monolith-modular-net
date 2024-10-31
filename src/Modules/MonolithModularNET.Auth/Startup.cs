@@ -9,6 +9,7 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MonolithModularNET.Auth.Core;
+using MonolithModularNET.Auth.Shared;
 using MonolithModularNET.Extensions.Abstractions;
 using MonolithModularNET.Extensions.Shared.Cache;
 
@@ -21,7 +22,7 @@ public static class Startup
         var authApiHandler = new AuthApiHandler();
         var group = app.MapGroup(pattern);
         group.MapPost("/sign-up", authApiHandler.HandleSignUpAsync);
-        group.MapPost("/login", authApiHandler.HandleLoginAsync);
+        group.MapPost("/sign-in", authApiHandler.HandleLoginAsync);
         group.MapPost("/refresh", authApiHandler.HandleRefreshAsync);
         group.MapPost("/logout", authApiHandler.HandleLogoutAsync);
 

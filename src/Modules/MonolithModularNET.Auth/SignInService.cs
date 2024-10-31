@@ -39,7 +39,7 @@ public class SignInService: ISignInService<AuthUser>
 
         if (user is null)
         {
-            return AuthResult.Failure([describer.EmailNotExisted()]);
+            return AuthResult.Failure([describer.EmailDoesNotExist()]);
         }
 
         if (string.IsNullOrEmpty(user.PasswordHash))

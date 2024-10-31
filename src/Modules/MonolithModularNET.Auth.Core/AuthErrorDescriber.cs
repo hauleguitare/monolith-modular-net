@@ -11,12 +11,12 @@ public class AuthErrorDescriber
         };
     }
     
-    public virtual AuthError EmailNotExisted()
+    public virtual AuthError EmailDoesNotExist()
     {
         return new AuthError
         {
-            Code = nameof(EmailNotExisted),
-            Description = "EmailNotExisted"
+            Code = nameof(EmailDoesNotExist),
+            Description = "EmailDoesNotExist"
         };
     }
     

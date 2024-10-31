@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace MonolithModularNET.Auth.Core;
+namespace MonolithModularNET.Auth.Shared;
 
 public class RoleBasedRequirement : IAuthorizationRequirement
 {
