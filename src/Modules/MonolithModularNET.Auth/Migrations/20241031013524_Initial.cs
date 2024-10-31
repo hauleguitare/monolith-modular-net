@@ -208,7 +208,7 @@ namespace MonolithModularNET.Auth.Migrations
                 values: new object[,]
                 {
                     { "moderator", "5935436e-1656-40da-8a85-679a01dcc6b6", false, "Moderator", "MODERATOR", 2 },
-                    { "new_user", "8e147d6f-d6a2-41ef-9920-6c7eb1796dfc", false, "New User", "NEW USER", 999999 },
+                    { "new_user", "8e147d6f-d6a2-41ef-9920-6c7eb1796dfc", false, "New Models", "NEW USER", 999999 },
                     { "owner", "140c8093-24e7-4ec1-a19a-ea21a3244194", false, "Owner", "OWNER", 0 },
                     { "super_administrator", "ca98498a-57de-4602-8e9b-b150b7d0c8ff", false, "Super Administrator", "SUPER ADMINISTRATOR", 1 }
                 });

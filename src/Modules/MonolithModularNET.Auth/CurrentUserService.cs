@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using MonolithModularNET.Auth.Core;
+using MonolithModularNET.Extensions.Shared.Services;
 
 namespace MonolithModularNET.Auth;
 

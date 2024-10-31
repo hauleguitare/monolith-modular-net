@@ -163,8 +163,8 @@ public class AuthDbContext(
             new()
             {
                 Id = "new_user",
-                Name = "New User",
-                NormalizedName = "New User".ToUpper(),
+                Name = "New Models",
+                NormalizedName = "New Models".ToUpper(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 Priority = 999999
             }

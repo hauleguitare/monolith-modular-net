@@ -89,7 +89,7 @@ public class SignInService: ISignInService<AuthUser>
             new (ClaimTypes.NameIdentifier, user.Id),
         };
         
-        // User roles operation
+        // Models roles operation
 
         var roleNames = await _userManager.GetRolesAsync(user);
         
@@ -192,7 +192,7 @@ public class SignInService: ISignInService<AuthUser>
 
         if (user is null)
         {
-            throw new Exception("User is not found, something went wrong, please check!");
+            throw new Exception("Models is not found, something went wrong, please check!");
         }
 
         return await CredentialAsync(user, cancellationToken);

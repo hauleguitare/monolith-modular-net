@@ -9,9 +9,10 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MonolithModularNET.Auth.Core;
-using MonolithModularNET.Auth.Shared;
 using MonolithModularNET.Extensions.Abstractions;
+using MonolithModularNET.Extensions.Shared.Authorization;
 using MonolithModularNET.Extensions.Shared.Cache;
+using MonolithModularNET.Extensions.Shared.Services;
 
 namespace MonolithModularNET.Auth;
 
@@ -96,7 +97,7 @@ public static class Startup
         services.TryAddScoped<RoleManager<AuthRole>>();
         services.TryAddScoped<IUserClaimsPrincipalFactory<AuthUser>, UserClaimsPrincipalFactory<AuthUser, AuthRole>>();
         
-        // Add Auth Unit Of Work
+        // Add Authorization Unit Of Work
         services.TryAddScoped<IUnitOfWork<AuthDbContext, IDbContextTransaction>, AuthUnitOfWork>();
         // Add AuthService
         services.TryAddScoped<ISignUpService<AuthUser, AuthRole>, SignUpService>();
@@ -125,7 +126,7 @@ public static class Startup
             e.AddProfile<AuthResponseProfile>();
         });
         
-        // Add Current User Service
+        // Add Current Models Service
         services.TryAddTransient<ICurrentUserService, CurrentUserService>();
         
         return services;

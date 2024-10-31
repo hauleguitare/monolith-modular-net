@@ -8,4 +8,8 @@ public class AuthUser: IdentityUser<string>
     {
         Id = Guid.NewGuid().ToString("N");
     }
+    
+    public string? FirstName { get; set; }
+    
+    public string? LastName { get; set; }
 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Abstractions;
+using MonolithModularNET.Extensions.Shared.Services;
 
 namespace MonolithModularNET.Auth;
 

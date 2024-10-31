@@ -202,7 +202,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "owner",
-                            ConcurrencyStamp = "140c8093-24e7-4ec1-a19a-ea21a3244194",
+                            ConcurrencyStamp = "445a335e-4539-4c9c-bad2-8da2675df054",
                             IsDefault = false,
                             Name = "Owner",
                             NormalizedName = "OWNER",
@@ -211,7 +211,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "super_administrator",
-                            ConcurrencyStamp = "ca98498a-57de-4602-8e9b-b150b7d0c8ff",
+                            ConcurrencyStamp = "ee09fae1-e8e1-4ce1-a3e9-5dff50d58c0b",
                             IsDefault = false,
                             Name = "Super Administrator",
                             NormalizedName = "SUPER ADMINISTRATOR",
@@ -220,7 +220,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "moderator",
-                            ConcurrencyStamp = "5935436e-1656-40da-8a85-679a01dcc6b6",
+                            ConcurrencyStamp = "3c3d0036-8bea-47e1-9399-9906780044be",
                             IsDefault = false,
                             Name = "Moderator",
                             NormalizedName = "MODERATOR",
@@ -229,10 +229,10 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "new_user",
-                            ConcurrencyStamp = "8e147d6f-d6a2-41ef-9920-6c7eb1796dfc",
+                            ConcurrencyStamp = "a90147c5-fd00-41b6-a5e7-c0df0d21ffed",
                             IsDefault = false,
-                            Name = "New User",
-                            NormalizedName = "NEW USER",
+                            Name = "New Models",
+                            NormalizedName = "NEW MODELS",
                             Priority = 999999
                         });
                 });
@@ -255,6 +255,12 @@ namespace MonolithModularNET.Auth.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -305,13 +311,13 @@ namespace MonolithModularNET.Auth.Migrations
                         {
                             Id = "root",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7ded8d96-0a1e-4e57-9e22-035d2128bac1",
+                            ConcurrencyStamp = "69ba3ff0-1496-4bcf-b617-79abe3e15615",
                             Email = "root@root.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ROOT@ROOT.COM",
                             NormalizedUserName = "ROOT@ROOT.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFjWqpDzVSl+onI9p67xXY+iwHxhv+C2RaoQ6g/DR/JsTCTcQ+9A+7rCR8id1k7BHA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOsj7Ju5QiAWdq3YPn0zs1QR3OVc4wq/gHnlut8H1Cxx7qJDbvJHo4Asqsd6t6Iaeg==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "root@root.com"

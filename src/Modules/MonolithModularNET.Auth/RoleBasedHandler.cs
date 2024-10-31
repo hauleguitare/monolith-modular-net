@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using MonolithModularNET.Auth.Core;
+using MonolithModularNET.Extensions.Shared.Authorization;
 
 namespace MonolithModularNET.Auth;
 
