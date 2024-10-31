@@ -37,6 +37,11 @@ public abstract class ReadonlyEntityRepository<TContext, TEntity>(TContext conte
         return DbSet.AsQueryable();
     }
 
+    public IQueryable<TEntity> AsNoTracking()
+    {
+        return DbSet.AsNoTracking();
+    }
+
     public virtual TEntity? FindById(params object?[]? keyValues)
     {
         return DbSet.Find(keyValues);
