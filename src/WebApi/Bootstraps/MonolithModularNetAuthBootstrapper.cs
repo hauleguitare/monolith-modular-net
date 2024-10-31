@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MonolithModularNET.Auth;
-using MonolithModularNET.Auth.Core;
+using MonolithModularNET.Auth.Shared;
 using WebApi.Settings;
 
 namespace WebApi.Bootstraps;

@@ -2,16 +2,17 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from 'app/core/user/user.types';
 import { map, Observable, ReplaySubject, tap } from 'rxjs';
+import { LocalStorageService } from '../../../@fuse/services/local-storage/local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
     private _httpClient = inject(HttpClient);
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
+    private _localStorageService = inject(LocalStorageService);
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
     // -----------------------------------------------------------------------------------------------------
-
     /**
      * Setter & getter for user
      *
@@ -30,6 +31,7 @@ export class UserService {
     // @ Public methods
     // -----------------------------------------------------------------------------------------------------
 
+
     /**
      * Get the current signed-in user data
      */
@@ -39,6 +41,30 @@ export class UserService {
                 this._user.next(user);
             })
         );
+    }
+
+    /**
+     * Getter for user cached
+     * */
+    getCached()
+    {
+        return this._localStorageService.get<User>("user");
+    }
+
+    /**
+     * Setter for user cached
+     * */
+    setCached(user: User)
+    {
+        this._localStorageService.set("user", user);
+    }
+
+    /**
+     * Getter for check user cached
+     * */
+    hasCached()
+    {
+        return this._localStorageService.has("user");
     }
 
     /**

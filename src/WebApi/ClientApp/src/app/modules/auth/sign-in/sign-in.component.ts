@@ -17,6 +17,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { fuseAnimations } from '@fuse/animations';
 import { FuseAlertComponent, FuseAlertType } from '@fuse/components/alert';
 import { AuthService } from 'app/core/auth/auth.service';
+import { catchError, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ApiErrorResponse } from '../../../../@api/types';
+import { TranslocoService } from '@ngneat/transloco';
+import { stringHelper } from '../../../../utils/stringHelper';
 
 @Component({
     selector: 'auth-sign-in',
@@ -54,6 +59,7 @@ export class AuthSignInComponent implements OnInit {
         private _activatedRoute: ActivatedRoute,
         private _authService: AuthService,
         private _formBuilder: UntypedFormBuilder,
+        private _translocoService: TranslocoService,
         private _router: Router
     ) {}
 
@@ -96,8 +102,37 @@ export class AuthSignInComponent implements OnInit {
         this.showAlert = false;
 
         // Sign in
-        this._authService.signIn(this.signInForm.value).subscribe(
-            () => {
+        this._authService.signIn(this.signInForm.value)
+            .pipe(
+                catchError((errResp: HttpErrorResponse) => {
+
+                    const errors = errResp.error['errors'] as ApiErrorResponse[];
+                    if (errResp.error['errors'] && errors.length)
+                    {
+                        // Set the alert
+                        this.alert = {
+                            type: 'error',
+                            message: this._translocoService.translate(`error.${stringHelper.camelize(errors[0].code)}`),
+                        };
+                    }
+
+                    // Re-enable the form
+                    this.signInForm.enable();
+
+                    // Reset the form
+                    this.signInNgForm.resetForm();
+
+
+
+                    // Show the alert
+                    this.showAlert = true;
+
+
+                    // Return error
+                    return throwError(() => errResp)
+                })
+            )
+            .subscribe(() => {
                 // Set the redirect url.
                 // The '/signed-in-redirect' is a dummy url to catch the request and redirect the user
                 // to the correct page after a successful sign in. This way, that url can be set via
@@ -109,23 +144,6 @@ export class AuthSignInComponent implements OnInit {
 
                 // Navigate to the redirect url
                 this._router.navigateByUrl(redirectURL);
-            },
-            (response) => {
-                // Re-enable the form
-                this.signInForm.enable();
-
-                // Reset the form
-                this.signInNgForm.resetForm();
-
-                // Set the alert
-                this.alert = {
-                    type: 'error',
-                    message: 'Wrong email or password',
-                };
-
-                // Show the alert
-                this.showAlert = true;
-            }
-        );
+            });
     }
 }

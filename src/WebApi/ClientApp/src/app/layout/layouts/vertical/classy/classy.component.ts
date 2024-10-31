@@ -21,6 +21,7 @@ import { SearchComponent } from 'app/layout/common/search/search.component';
 import { ShortcutsComponent } from 'app/layout/common/shortcuts/shortcuts.component';
 import { UserComponent } from 'app/layout/common/user/user.component';
 import { Subject, takeUntil } from 'rxjs';
+import { cloneDeep } from 'lodash-es';
 
 @Component({
     selector: 'classy-layout',
@@ -59,7 +60,8 @@ export class ClassyLayoutComponent implements OnInit, OnDestroy {
         private _userService: UserService,
         private _fuseMediaWatcherService: FuseMediaWatcherService,
         private _fuseNavigationService: FuseNavigationService
-    ) {}
+    ) {
+    }
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors

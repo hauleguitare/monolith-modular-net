@@ -1,5 +1,9 @@
 {
     "welcome-back": "Welcome back",
     "Project": "Project",
-    "Analytics": "Analytics"
+    "Analytics": "Analytics",
+    "error": {
+        "emailDoesNotExist": "Email doesn't exist",
+        "passwordMisMatched": "Password doesn't match"
+    }
 }

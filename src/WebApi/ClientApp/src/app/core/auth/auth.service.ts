@@ -3,12 +3,16 @@ import { inject, Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { ApiAuthService } from '@api/auth';
+import { LocalStorageService } from '@fuse/services/local-storage/local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     private _authenticated: boolean = false;
     private _httpClient = inject(HttpClient);
     private _userService = inject(UserService);
+    private _apiAuthService = inject(ApiAuthService);
+    private _localStorageService = inject(LocalStorageService);
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -18,11 +22,11 @@ export class AuthService {
      * Setter & getter for access token
      */
     set accessToken(token: string) {
-        localStorage.setItem('accessToken', token);
+        this._localStorageService.set('accessToken', token);
     }
 
     get accessToken(): string {
-        return localStorage.getItem('accessToken') ?? '';
+        return this._localStorageService.get('accessToken') ?? '';
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -58,16 +62,30 @@ export class AuthService {
             return throwError('User is already logged in.');
         }
 
-        return this._httpClient.post('api/auth/sign-in', credentials).pipe(
-            switchMap((response: any) => {
+        return this._apiAuthService.signIn(credentials).pipe(
+            switchMap((response) => {
                 // Store the access token in the local storage
-                this.accessToken = response.accessToken;
+                this.accessToken = response.result.accessToken;
 
                 // Set the authenticated flag to true
                 this._authenticated = true;
 
                 // Store the user on the user service
-                this._userService.user = response.user;
+                this._userService.user = {
+                    id: 'cfaad35d-07a3-4447-a6c3-d8c3d54fd5df',
+                    name: 'Brian Hughes',
+                    email: 'hughes.brian@company.com',
+                    avatar: 'images/avatars/brian-hughes.jpg',
+                    status: 'online',
+                };
+
+                this._userService.setCached({
+                    id: 'cfaad35d-07a3-4447-a6c3-d8c3d54fd5df',
+                    name: 'Brian Hughes',
+                    email: 'hughes.brian@company.com',
+                    avatar: 'images/avatars/brian-hughes.jpg',
+                    status: 'online',
+                });
 
                 // Return a new observable with the response
                 return of(response);
@@ -118,7 +136,8 @@ export class AuthService {
      */
     signOut(): Observable<any> {
         // Remove the access token from the local storage
-        localStorage.removeItem('accessToken');
+        this._localStorageService.remove('accessToken');
+        this._localStorageService.remove('user');
 
         // Set the authenticated flag to false
         this._authenticated = false;
@@ -172,7 +191,12 @@ export class AuthService {
             return of(false);
         }
 
+        // If the access token still dates, get user data from local storage
+        if (this._userService.hasCached()) {
+            this._userService.user = this._userService.getCached();
+        }
+
         // If the access token exists, and it didn't expire, sign in using it
-        return this.signInUsingToken();
+        return of(true);
     }
 }

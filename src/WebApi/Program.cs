@@ -13,6 +13,12 @@ builder.Services.AddEndpointsApiExplorer()
 // Add MonolithModularNET Auth Bootstrapper
 builder.Services.AddAuthBootstrapper(builder.Configuration, builder.Environment);
 
+// Add SpaStaticFiles
+builder.Services.AddSpaStaticFiles(conf =>
+{
+    conf.RootPath = "ClientApp/dist";
+});
+
 
 var app = builder.Build();
 
@@ -27,8 +33,29 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+// ADd Static files
+app.UseStaticFiles();
+
+// Add SPA static files
+app.UseSpaStaticFiles();
+
+// Add SPA
+app.MapWhen(x => x.Request.Path.Value != null && !x.Request.Path.Value.StartsWith("/api"), conf =>
+{
+    conf.UseSpa(spaBuilder =>
+    {
+        spaBuilder.Options.SourcePath = "ClientApp";
+    
+        if (builder.Environment.IsDevelopment())
+        {
+            spaBuilder.UseProxyToSpaDevelopmentServer(new Uri("http://localhost:4200"));
+        }
+    });
+});
+
+
+
 // app.MapControllers();
 app.MapMonolithModularNetAuthApi();
-
 
 app.Run();

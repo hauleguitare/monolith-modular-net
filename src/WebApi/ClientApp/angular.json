@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/fuse",
+                        "outputPath": "dist",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": ["zone.js"],
@@ -111,5 +111,8 @@
                 }
             }
         }
+    },
+    "cli": {
+      "analytics": "1c557d66-dcbf-4aed-82d9-f53bbacc836c"
     }
 }
