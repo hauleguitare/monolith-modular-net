@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace MonolithModularNET.Auth.Core;
+namespace MonolithModularNET.Extensions.Shared.Services;
 
 public interface ICurrentUserService
 {

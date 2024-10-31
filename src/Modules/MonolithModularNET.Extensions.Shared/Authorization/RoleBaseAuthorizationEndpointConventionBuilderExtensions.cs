@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 
-namespace MonolithModularNET.Auth.Shared;
+namespace MonolithModularNET.Extensions.Shared.Authorization;
 
 public static class RoleBaseAuthorizationEndpointConventionBuilderExtensions
 {
