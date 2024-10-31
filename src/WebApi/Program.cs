@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer()
     .AddSwaggerGen();
 
-// Add MonolithModularNET Auth Bootstrapper
+// Add MonolithModularNET Authorization Bootstrapper
 builder.Services.AddAuthBootstrapper(builder.Configuration, builder.Environment);
 
 // Add SpaStaticFiles
