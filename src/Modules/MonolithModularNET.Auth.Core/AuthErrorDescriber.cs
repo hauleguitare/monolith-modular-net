@@ -20,6 +20,15 @@ public class AuthErrorDescriber
         };
     }
     
+    public virtual AuthError UserIsNotActive()
+    {
+        return new AuthError
+        {
+            Code = nameof(UserIsNotActive),
+            Description = "UserIsNotActive"
+        };
+    }
+    
     public virtual AuthError PasswordMisMatched()
     {
         return new AuthError

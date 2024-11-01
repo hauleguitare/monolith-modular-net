@@ -12,5 +12,7 @@ public class UserResponse
     
     public string Email { get; set; } = null!;
     
+    public string? PhoneNumber { get; set; }
+    
     public string? AvatarUrl { get; set; }
 }

@@ -3,14 +3,14 @@ using MonolithModularNET.Extensions.Abstractions;
 
 namespace MonolithModularNET.Extensions.Shared.Repository;
 
-public abstract class ReadonlyEntityRepository<TContext, TEntity>(TContext context)
+public abstract class ReadonlyEntityRepository<TContext, TEntity>(TContext dbContext)
     : IReadonlyEntityRepository<TEntity>
     where TEntity : class, IAggregateRoot
     where TContext : DbContext
 {
 
-    private TContext Context { get; } = context;
-    private DbSet<TEntity> DbSet { get; } = context.Set<TEntity>();
+    private TContext DbContext { get; } = dbContext;
+    private DbSet<TEntity> DbSet { get; } = dbContext.Set<TEntity>();
 
     private bool _disposed = false;
     protected virtual void Dispose(bool disposing)
@@ -19,7 +19,7 @@ public abstract class ReadonlyEntityRepository<TContext, TEntity>(TContext conte
         {
             if (disposing)
             {
-                Context.Dispose();
+                DbContext.Dispose();
             }
         }
         _disposed = true;

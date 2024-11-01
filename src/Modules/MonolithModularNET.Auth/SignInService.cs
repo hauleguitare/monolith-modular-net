@@ -42,6 +42,11 @@ public class SignInService: ISignInService<AuthUser>
             return AuthResult.Failure([describer.EmailDoesNotExist()]);
         }
 
+        if (!user.IsActive)
+        {
+            return AuthResult.Failure([describer.UserIsNotActive()]);
+        }
+
         if (string.IsNullOrEmpty(user.PasswordHash))
         {
             return AuthResult.Failure([describer.NotSupportPasswordProvider()]);

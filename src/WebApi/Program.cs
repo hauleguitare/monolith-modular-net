@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer()
 
 // Add MonolithModularNET Authorization Bootstrapper
 builder.Services.AddAuthBootstrapper(builder.Configuration, builder.Environment);
+builder.Services.AddUserBootstrapper(builder.Configuration, builder.Environment);
 
 // Add SpaStaticFiles
 builder.Services.AddSpaStaticFiles(conf =>

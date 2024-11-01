@@ -3,7 +3,8 @@
     "Project": "Project",
     "Analytics": "Analytics",
     "error": {
-        "emailDoesNotExist": "Email doesn't exist",
-        "passwordMisMatched": "Password doesn't match"
+        "emailDoesNotExist": "Email doesn't exist.",
+        "passwordMisMatched": "Password doesn't match.",
+        "userIsNotActive": "User isn't active."
     }
 }

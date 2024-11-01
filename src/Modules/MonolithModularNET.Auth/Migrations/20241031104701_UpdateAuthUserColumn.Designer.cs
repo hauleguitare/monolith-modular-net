@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MonolithModularNET.Auth;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MonolithModularNET.Auth.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241031104701_UpdateAuthUserColumn")]
+    partial class UpdateAuthUserColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,7 +205,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "owner",
-                            ConcurrencyStamp = "194605ad-111f-42d4-9795-1c6a92083c69",
+                            ConcurrencyStamp = "445a335e-4539-4c9c-bad2-8da2675df054",
                             IsDefault = false,
                             Name = "Owner",
                             NormalizedName = "OWNER",
@@ -211,7 +214,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "super_administrator",
-                            ConcurrencyStamp = "5a4666d6-09cb-4439-a174-62a115044698",
+                            ConcurrencyStamp = "ee09fae1-e8e1-4ce1-a3e9-5dff50d58c0b",
                             IsDefault = false,
                             Name = "Super Administrator",
                             NormalizedName = "SUPER ADMINISTRATOR",
@@ -220,7 +223,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "moderator",
-                            ConcurrencyStamp = "aafcb280-03e3-4aae-a15a-30ffc7b71a17",
+                            ConcurrencyStamp = "3c3d0036-8bea-47e1-9399-9906780044be",
                             IsDefault = false,
                             Name = "Moderator",
                             NormalizedName = "MODERATOR",
@@ -229,7 +232,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "new_user",
-                            ConcurrencyStamp = "3ac86a35-48aa-41ea-b45d-ed197a7f4df3",
+                            ConcurrencyStamp = "a90147c5-fd00-41b6-a5e7-c0df0d21ffed",
                             IsDefault = false,
                             Name = "New Models",
                             NormalizedName = "NEW MODELS",
@@ -258,9 +261,6 @@ namespace MonolithModularNET.Auth.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("LastName")
                         .HasColumnType("text");
@@ -314,14 +314,13 @@ namespace MonolithModularNET.Auth.Migrations
                         {
                             Id = "root",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f65e8d69-c60b-481d-a943-e4bdd81ad57d",
+                            ConcurrencyStamp = "69ba3ff0-1496-4bcf-b617-79abe3e15615",
                             Email = "root@root.com",
                             EmailConfirmed = true,
-                            IsActive = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ROOT@ROOT.COM",
                             NormalizedUserName = "ROOT@ROOT.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJuLeFk3fxnWYTbmkInm6EQ/AZW7tZI+mO1qocmE5PQeL098m50rlDxx9/bp9kLZHg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOsj7Ju5QiAWdq3YPn0zs1QR3OVc4wq/gHnlut8H1Cxx7qJDbvJHo4Asqsd6t6Iaeg==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "root@root.com"

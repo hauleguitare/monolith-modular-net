@@ -3,13 +3,13 @@ using MonolithModularNET.Extensions.Abstractions;
 
 namespace MonolithModularNET.Extensions.Shared.Repository;
 
-public abstract class WriteableEntityRepository<TContext, TEntity>(TContext context): IWriteableEntityRepository<TEntity>
+public abstract class WriteableEntityRepository<TContext, TEntity>(TContext dbContext): IWriteableEntityRepository<TEntity>
     where TEntity : class, IAggregateRoot
     where TContext : DbContext
 {
-    private TContext Context { get; } = context;
+    private TContext DbContext { get; } = dbContext;
     
-    private DbSet<TEntity> DbSet { get; } = context.Set<TEntity>();
+    private DbSet<TEntity> DbSet { get; } = dbContext.Set<TEntity>();
     
     private bool _disposed = false;
     protected virtual void Dispose(bool disposing)
@@ -18,7 +18,7 @@ public abstract class WriteableEntityRepository<TContext, TEntity>(TContext cont
         {
             if (disposing)
             {
-                Context.Dispose();
+                DbContext.Dispose();
             }
         }
         _disposed = true;
