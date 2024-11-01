@@ -4,7 +4,7 @@ using MonolithModularNET.Extensions.Abstractions;
 
 namespace MonolithModularNET.Extensions.Shared.UnitOfWork;
 
-public abstract class UnitOfWork<TContext>(TContext context) : IUnitOfWork<TContext, IDbContextTransaction>
+public abstract class UnitOfWork<TContext>(TContext context) : IUnitOfWork<TContext>
     where TContext : DbContext
 {
     private bool _disposed = false;
@@ -38,11 +38,6 @@ public abstract class UnitOfWork<TContext>(TContext context) : IUnitOfWork<TCont
     public virtual async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await Context.SaveChangesAsync(cancellationToken) > 0;
-    }
-
-    public virtual IDbContextTransaction BeginTransaction()
-    {
-        return Context.Database.BeginTransaction();
     }
 
     public virtual Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)

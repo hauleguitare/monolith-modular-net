@@ -3,7 +3,7 @@ using MonolithModularNET.Extensions.Abstractions;
 
 namespace MonolithModularNET.Auth;
 
-public class AuthUnitOfWork: IUnitOfWork<AuthDbContext, IDbContextTransaction>
+public class AuthUnitOfWork: IUnitOfWork<AuthDbContext>
 {
     public AuthDbContext Context { get; set; }
     
@@ -27,16 +27,6 @@ public class AuthUnitOfWork: IUnitOfWork<AuthDbContext, IDbContextTransaction>
     public async Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         return await Context.SaveChangesAsync(cancellationToken) > 0;
-    }
-
-    public IDbContextTransaction BeginTransaction()
-    {
-        return Context.Database.BeginTransaction();
-    }
-
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        return Context.Database.BeginTransactionAsync(cancellationToken);
     }
 
     public void Commit()
