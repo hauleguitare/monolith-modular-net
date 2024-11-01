@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using MonolithModularNET.Auth.Core;
+using MonolithModularNET.Extensions.Shared.Models;
 
 namespace MonolithModularNET.Auth;
 
@@ -9,7 +10,20 @@ public class AuthApiHandler
     {
         var result = await service.SignUpAsync(request);
 
-        return !result.Succeed ? Results.BadRequest(AuthResponse.Failure(result.Errors ?? new List<AuthError>())) : Results.Ok(AuthResponse.Success());
+        if (!result.Succeed)
+        {
+            var errors = result.Errors == null
+                ? new List<ApiErrorResponse>()
+                : result.Errors.Select(e => new ApiErrorResponse()
+                {
+                    Code = e.Code,
+                    Description = e.Description
+                }).ToList();
+
+            return Results.BadRequest(ApiResponse.Failure(errors));
+        }
+
+        return Results.Ok(ApiResponse.Success(result.Data));
     }
 
     public async Task<IResult> HandleLoginAsync(SignInRequest request, HttpContext context,
@@ -17,7 +31,20 @@ public class AuthApiHandler
     {
         var result = await service.SignInAsync(request.Email, request.Password);
 
-        return !result.Succeed ? Results.BadRequest(AuthResponse.Failure(result.Errors!)) : Results.Ok(AuthResponse.Success(result.Data));
+        if (!result.Succeed)
+        {
+            var errors = result.Errors == null
+                ? new List<ApiErrorResponse>()
+                : result.Errors.Select(e => new ApiErrorResponse()
+                {
+                    Code = e.Code,
+                    Description = e.Description
+                }).ToList();
+
+            return Results.BadRequest(ApiResponse.Failure(errors));
+        }
+
+        return Results.Ok(ApiResponse.Success(result.Data));
     }
 
     public async Task<IResult> HandleRefreshAsync(RefreshTokenRequest request, HttpContext context,
@@ -25,7 +52,20 @@ public class AuthApiHandler
     {
         var result = await service.RefreshAsync(request.RefreshToken);
             
-        return !result.Succeed ? Results.BadRequest(AuthResponse.Failure(result.Errors!)) : Results.Ok(AuthResponse.Success(result.Data));
+        if (!result.Succeed)
+        {
+            var errors = result.Errors == null
+                ? new List<ApiErrorResponse>()
+                : result.Errors.Select(e => new ApiErrorResponse()
+                {
+                    Code = e.Code,
+                    Description = e.Description
+                }).ToList();
+
+            return Results.BadRequest(ApiResponse.Failure(errors));
+        }
+
+        return Results.Ok(ApiResponse.Success(result.Data));
     }
     
     public async Task<IResult> HandleLogoutAsync(HttpContext context,
@@ -33,6 +73,19 @@ public class AuthApiHandler
     {
         var result = await service.LogoutAsync();
         
-        return !result.Succeed ? Results.BadRequest(AuthResponse.Failure(result.Errors!)) : Results.Ok(AuthResponse.Success(result.Data));
+        if (!result.Succeed)
+        {
+            var errors = result.Errors == null
+                ? new List<ApiErrorResponse>()
+                : result.Errors.Select(e => new ApiErrorResponse()
+                {
+                    Code = e.Code,
+                    Description = e.Description
+                }).ToList();
+
+            return Results.BadRequest(ApiResponse.Failure(errors));
+        }
+
+        return Results.Ok(ApiResponse.Success(result.Data));
     }
 }

@@ -14,4 +14,6 @@ public class AuthUser: IdentityUser<string>
     public string? LastName { get; set; }
 
     public bool IsActive { get; set; } = false;
+    
+    public string? AvatarUrl { get; set; }
 }

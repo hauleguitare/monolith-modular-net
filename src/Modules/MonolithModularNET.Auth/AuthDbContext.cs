@@ -142,6 +142,7 @@ public class AuthDbContext(
                 Name = "Owner",
                 NormalizedName = "Owner".ToUpper(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                IsDefault = true,
                 Priority = 0
             },
             new()
@@ -150,6 +151,7 @@ public class AuthDbContext(
                 Name = "Super Administrator",
                 NormalizedName = "Super Administrator".ToUpper(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                IsDefault = true,
                 Priority = 1
             },
             new()
@@ -158,14 +160,16 @@ public class AuthDbContext(
                 Name = "Moderator",
                 NormalizedName = "Moderator".ToUpper(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                IsDefault = true,
                 Priority = 2
             },
             new()
             {
                 Id = "new_user",
-                Name = "New Models",
-                NormalizedName = "New Models".ToUpper(),
+                Name = "New User",
+                NormalizedName = "New User".ToUpper(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                IsDefault = true,
                 Priority = 999999
             }
         };

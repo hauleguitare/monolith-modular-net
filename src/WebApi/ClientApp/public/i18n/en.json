@@ -5,6 +5,17 @@
     "error": {
         "emailDoesNotExist": "Email doesn't exist.",
         "passwordMisMatched": "Password doesn't match.",
-        "userIsNotActive": "User isn't active."
+        "userIsNotActive": "User isn't active.",
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "emailAddressRequired": "Email address is required",
+        "invalidEmailAddress": "Please enter a valid email address",
+        "passwordRequired": "Password is required"
+    },
+    "label": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "emailAddress": "Email address",
+        "password": "Password"
     }
 }

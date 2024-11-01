@@ -40,32 +40,46 @@
 
             <!-- Sign Up form -->
             <form class="mt-8" [formGroup]="signUpForm" #signUpNgForm="ngForm">
-                <!-- Name field -->
-                <mat-form-field class="w-full">
-                    <mat-label>Full name</mat-label>
-                    <input id="name" matInput [formControlName]="'name'" />
-                    @if (signUpForm.get('name').hasError('required')) {
-                        <mat-error> Full name is required </mat-error>
-                    }
-                </mat-form-field>
+                <!-- Name group field -->
+                <div class="flex gap-2.5">
+                    <!-- First Name field -->
+                    <mat-form-field class="w-full flex-1">
+                        <mat-label>{{ 'label.firstName' | transloco }}</mat-label>
+                        <input id="firstName" matInput [formControlName]="'firstName'" />
+                        @if (signUpForm.get('firstName').hasError('required')) {
+                            <mat-error> {{ 'error.firstNameRequired' | transloco }} </mat-error>
+                        }
+                    </mat-form-field>
+
+                    <!-- Last Name field -->
+                    <mat-form-field class="w-full flex-1">
+                        <mat-label>{{'label.lastName' | transloco }}</mat-label>
+                        <input id="lastName" matInput [formControlName]="'lastName'" />
+                        @if (signUpForm.get('lastName').hasError('required')) {
+                            <mat-error> {{ 'error.lastNameRequired' | transloco }} </mat-error>
+                        }
+                    </mat-form-field>
+                </div>
+
+
 
                 <!-- Email field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Email address</mat-label>
+                    <mat-label>{{ 'field.emailAddress' | transloco }}</mat-label>
                     <input id="email" matInput [formControlName]="'email'" />
                     @if (signUpForm.get('email').hasError('required')) {
-                        <mat-error> Email address is required </mat-error>
+                        <mat-error> {{ 'error.emailAddressRequired' | transloco }} </mat-error>
                     }
                     @if (signUpForm.get('email').hasError('email')) {
                         <mat-error>
-                            Please enter a valid email address
+                            {{ 'error.invalidEmailAddress' | transloco }}
                         </mat-error>
                     }
                 </mat-form-field>
 
                 <!-- Password field -->
                 <mat-form-field class="w-full">
-                    <mat-label>Password</mat-label>
+                    <mat-label>{{ 'field.password' | transloco }}</mat-label>
                     <input
                         id="password"
                         matInput
@@ -96,17 +110,7 @@
                             ></mat-icon>
                         }
                     </button>
-                    <mat-error> Password is required </mat-error>
-                </mat-form-field>
-
-                <!-- Company field -->
-                <mat-form-field class="w-full">
-                    <mat-label>Company</mat-label>
-                    <input
-                        id="company-confirm"
-                        matInput
-                        [formControlName]="'company'"
-                    />
+                    <mat-error> {{ 'error.passwordRequired' | transloco }} </mat-error>
                 </mat-form-field>
 
                 <!-- ToS and PP -->

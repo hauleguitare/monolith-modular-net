@@ -1,4 +1,5 @@
 using MonolithModularNET.Auth;
+using MonolithModularNET.User.Infrastructure;
 using WebApi.Bootstraps;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,6 +58,11 @@ app.MapWhen(x => x.Request.Path.Value != null && !x.Request.Path.Value.StartsWit
 
 
 // app.MapControllers();
+
+// map api/auth
 app.MapMonolithModularNetAuthApi();
+
+// map api/users
+app.MapMonolithModularNetUserApi();
 
 app.Run();

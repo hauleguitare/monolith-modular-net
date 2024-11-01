@@ -142,7 +142,7 @@ public static class Startup
             services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
             {
                 SecretKey = "bOBL7HWpP898C3zkWKQS8Uqa5ZWX/7UnSM5yRWOSZWTennHj5ZESA917+8Nlx65L",
-                ExpiresIn = 120
+                ExpiresInMinutes = 120
             });
         }
         else
@@ -159,7 +159,7 @@ public static class Startup
             services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
             {
                 SecretKey = jwtTokenOptions.SecretKey,
-                ExpiresIn = jwtTokenOptions.ExpiresIn
+                ExpiresInMinutes = jwtTokenOptions.ExpiresInMinutes
             });
         }
         return services;

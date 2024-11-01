@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Shared.Cache;
+using MonolithModularNET.Extensions.Shared.Models;
 
 namespace MonolithModularNET.Auth;
 
@@ -118,7 +119,7 @@ public class SignInService: ISignInService<AuthUser>
         {
             Id = jti,
             Claims = claims,
-            ExpiredAt = DateTime.UtcNow.AddMinutes(_options.ExpiresIn),
+            ExpiredAt = DateTime.UtcNow.AddMinutes(_options.ExpiresInMinutes),
             SecretKey = _options.SecretKey,
             Issuer = _options.Issuer
         });
@@ -139,7 +140,23 @@ public class SignInService: ISignInService<AuthUser>
         await SetRefreshTokenCacheAsync(user.Id, rfTokenResult.Token!, expiresTime, cancellationToken);
         
 
-        return AuthResult.Success(new {AccessToken = token, RefreshToken = rfTokenResult.Token});
+        return AuthResult.Success(new SignInResponse()
+        {
+            AccessToken = token,
+            RefreshToken = rfTokenResult.Token,
+            User = new UserResponse()
+            {
+                Id = user.Id,
+                UserName = user.UserName!,
+                AvatarUrl = user.AvatarUrl,
+                PhoneNumber = user.PhoneNumber,
+                PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                EmailConfirmed = user.EmailConfirmed,
+                Email = user.Email!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+            }
+        });
     }
 
     private bool TryGetAccessToken(out string? accessToken)

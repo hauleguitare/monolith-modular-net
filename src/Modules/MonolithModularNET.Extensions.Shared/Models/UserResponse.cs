@@ -12,7 +12,11 @@ public class UserResponse
     
     public string Email { get; set; } = null!;
     
+    public bool EmailConfirmed { get; set; }
+    
     public string? PhoneNumber { get; set; }
+    
+    public bool PhoneNumberConfirmed { get; set; }
     
     public string? AvatarUrl { get; set; }
 }

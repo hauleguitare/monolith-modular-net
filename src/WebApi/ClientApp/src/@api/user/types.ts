@@ -1,13 +1,11 @@
-export interface User {
+﻿export interface UserResponse {
     id: string;
-    name: string;
+    userName: string;
     firstName?: string;
     lastName?: string;
-    userName: string;
     email: string;
     emailConfirmed: boolean;
     phoneNumber?: string;
     phoneNumberConfirmed: boolean;
     avatarUrl?: string;
-    status?: string;
 }

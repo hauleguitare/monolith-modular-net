@@ -73,11 +73,8 @@ export class AuthSignInComponent implements OnInit {
     ngOnInit(): void {
         // Create the form
         this.signInForm = this._formBuilder.group({
-            email: [
-                'hughes.brian@company.com',
-                [Validators.required, Validators.email],
-            ],
-            password: ['admin', Validators.required],
+            email: ['root@root.com', [Validators.required, Validators.email]],
+            password: ['123456@#Abc', Validators.required],
             rememberMe: [''],
         });
     }
@@ -105,14 +102,16 @@ export class AuthSignInComponent implements OnInit {
         this._authService.signIn(this.signInForm.value)
             .pipe(
                 catchError((errResp: HttpErrorResponse) => {
-
-                    const errors = errResp.error['errors'] as ApiErrorResponse[];
-                    if (errResp.error['errors'] && errors.length)
-                    {
+                    const errors = errResp.error[
+                        'errors'
+                    ] as ApiErrorResponse[];
+                    if (errResp.error['errors'] && errors.length) {
                         // Set the alert
                         this.alert = {
                             type: 'error',
-                            message: this._translocoService.translate(`error.${stringHelper.camelize(errors[0].code)}`),
+                            message: this._translocoService.translate(
+                                `error.${stringHelper.camelize(errors[0].code)}`
+                            ),
                         };
                     }
 
@@ -121,7 +120,6 @@ export class AuthSignInComponent implements OnInit {
 
                     // Reset the form
                     this.signInNgForm.resetForm();
-
 
 
                     // Show the alert

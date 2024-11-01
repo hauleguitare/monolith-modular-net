@@ -202,7 +202,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "owner",
-                            ConcurrencyStamp = "194605ad-111f-42d4-9795-1c6a92083c69",
+                            ConcurrencyStamp = "9374c05f-ed16-47b4-8238-e9b01c251b1b",
                             IsDefault = false,
                             Name = "Owner",
                             NormalizedName = "OWNER",
@@ -211,7 +211,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "super_administrator",
-                            ConcurrencyStamp = "5a4666d6-09cb-4439-a174-62a115044698",
+                            ConcurrencyStamp = "cbdfd585-5355-4eb1-911c-274a032985e8",
                             IsDefault = false,
                             Name = "Super Administrator",
                             NormalizedName = "SUPER ADMINISTRATOR",
@@ -220,7 +220,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "moderator",
-                            ConcurrencyStamp = "aafcb280-03e3-4aae-a15a-30ffc7b71a17",
+                            ConcurrencyStamp = "93f0ca26-d00c-4bd7-878b-c828ba998507",
                             IsDefault = false,
                             Name = "Moderator",
                             NormalizedName = "MODERATOR",
@@ -229,7 +229,7 @@ namespace MonolithModularNET.Auth.Migrations
                         new
                         {
                             Id = "new_user",
-                            ConcurrencyStamp = "3ac86a35-48aa-41ea-b45d-ed197a7f4df3",
+                            ConcurrencyStamp = "bac84da0-b546-4d75-967e-045ffff17af2",
                             IsDefault = false,
                             Name = "New Models",
                             NormalizedName = "NEW MODELS",
@@ -244,6 +244,9 @@ namespace MonolithModularNET.Auth.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
+
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -314,14 +317,14 @@ namespace MonolithModularNET.Auth.Migrations
                         {
                             Id = "root",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f65e8d69-c60b-481d-a943-e4bdd81ad57d",
+                            ConcurrencyStamp = "572815b5-6d61-4bf0-9254-7d14f7eb3286",
                             Email = "root@root.com",
                             EmailConfirmed = true,
                             IsActive = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ROOT@ROOT.COM",
                             NormalizedUserName = "ROOT@ROOT.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJuLeFk3fxnWYTbmkInm6EQ/AZW7tZI+mO1qocmE5PQeL098m50rlDxx9/bp9kLZHg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEABODfEn9UBjO6noxO7T3FCwr4WGMSmAmpdqq+jp4GYNEIUHzEWjFw8/7DMZBhfewQ==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "root@root.com"

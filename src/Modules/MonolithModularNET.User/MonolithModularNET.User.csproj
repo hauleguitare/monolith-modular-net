@@ -14,4 +14,9 @@
       <ProjectReference Include="..\MonolithModularNET.User.Core\MonolithModularNET.User.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Commands\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
 </Project>

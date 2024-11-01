@@ -10,18 +10,6 @@ public static class MonolithModularNetUserBootstrapper
     {
         services.AddMonolithModularNetUser();
 
-        services.AddMonolithModularNetUserDbContext(opts =>
-        {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            opts.UseNpgsql(connectionString);
-
-            if (environment.IsDevelopment())
-            {
-                opts.EnableSensitiveDataLogging();
-                opts.EnableDetailedErrors();
-            }
-        });
-
         return services;
     }
 }

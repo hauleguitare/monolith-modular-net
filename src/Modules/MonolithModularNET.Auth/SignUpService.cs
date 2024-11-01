@@ -9,12 +9,13 @@ namespace MonolithModularNET.Auth;
 public class SignUpService(
     UserManager<AuthUser> userManager,
     RoleManager<AuthRole> roleManager,
-    IUnitOfWork<AuthDbContext> unitOfWork)
+    IUnitOfWork<AuthDbContext> unitOfWork, AuthDbContext _authDbContext)
     : ISignUpService<AuthUser, AuthRole>
 {
     public async Task<AuthResult> SignUpAsync(SignUpRequest request, CancellationToken cancellationToken = default(CancellationToken))
     {
         var describer = new AuthErrorDescriber();
+        var transaction = await _authDbContext.Database.BeginTransactionAsync(cancellationToken);
         try
         {
             var defaultRole = await roleManager.Roles.Where(e => e.IsDefault).OrderByDescending(e => e.Priority)
@@ -28,7 +29,9 @@ public class SignUpService(
             var user = new AuthUser()
             {
                 Email = request.Email,
-                UserName = request.Email
+                UserName = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName
             };
 
             var identityResult = await userManager.CreateAsync(user, request.Password);
@@ -45,14 +48,14 @@ public class SignUpService(
             await userManager.AddToRoleAsync(user, defaultRole.Name!);
             
             await unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            await unitOfWork.CommitAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
             
             return AuthResult.Success();
         }
         catch (Exception e)
         {
-            await unitOfWork.RollbackAsync(cancellationToken);
+            await transaction.RollbackAsync(cancellationToken);
             throw;
         }
         
