@@ -11,7 +11,7 @@ namespace MonolithModularNET.Auth;
 public class AuthV1ClassicTokenService(
     IMapper mapper,
     IAuthWriteableRepository<AuthV1ClassicToken> writeableRepository,
-    IUnitOfWork<AuthDbContext, IDbContextTransaction> unitOfWork, ICurrentUserService currentUserService, IAuthReadonlyRepository<AuthV1ClassicToken> readonlyRepository)
+    IUnitOfWork<AuthDbContext> unitOfWork, ICurrentUserService currentUserService, IAuthReadonlyRepository<AuthV1ClassicToken> readonlyRepository)
     : IAuthV1ClassicTokenService
 {
     public async Task<AuthResult<AuthV1ClassicTokenResponse>> CreateAsync(AuthV1ClassicTokenCreateRequest request)

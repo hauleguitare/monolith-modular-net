@@ -98,7 +98,7 @@ public static class Startup
         services.TryAddScoped<IUserClaimsPrincipalFactory<AuthUser>, UserClaimsPrincipalFactory<AuthUser, AuthRole>>();
         
         // Add Authorization Unit Of Work
-        services.TryAddScoped<IUnitOfWork<AuthDbContext, IDbContextTransaction>, AuthUnitOfWork>();
+        services.TryAddScoped<IUnitOfWork<AuthDbContext>, AuthUnitOfWork>();
         // Add AuthService
         services.TryAddScoped<ISignUpService<AuthUser, AuthRole>, SignUpService>();
         // Add JWTService
