@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MonolithModularNET.User.Core;
+using MonolithModularNET.User.Infrastructure.Context;
+using MonolithModularNET.User.Infrastructure.Repositories;
 
 namespace MonolithModularNET.User.Infrastructure;
 

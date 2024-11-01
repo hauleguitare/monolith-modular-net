@@ -1,6 +1,4 @@
-﻿using MonolithModularNET.Auth.Core;
-
-namespace MonolithModularNET.User.Core;
+﻿namespace MonolithModularNET.User.Core;
 
 public class UserErrorDescriber
 {
