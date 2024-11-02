@@ -21,4 +21,6 @@ public class UserResponse
     public string? AvatarUrl { get; set; }
     
     public bool IsActive { get; set; }
+
+    public ICollection<RoleResponse> Roles { get; set; } = new List<RoleResponse>();
 }

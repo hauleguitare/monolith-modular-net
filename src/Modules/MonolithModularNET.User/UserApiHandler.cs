@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MonolithModularNET.Extensions.Shared.Models;
 using MonolithModularNET.Extensions.Shared.Services;
-using MonolithModularNET.User.Commands.PatchUpdateUser;
-using MonolithModularNET.User.Queries.GetUserById;
+using MonolithModularNET.User.Core.Commands.PatchUpdateUser;
+using MonolithModularNET.User.Core.Queries.GetUserById;
 
 namespace MonolithModularNET.User;
 

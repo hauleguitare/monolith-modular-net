@@ -38,7 +38,7 @@ public static class Startup
 
     private static IServiceCollection RegisterCqrs(this IServiceCollection services)
     {
-        var assembly = AppDomain.CurrentDomain.Load("MonolithModularNET.User");
+        var assembly = AppDomain.CurrentDomain.Load("MonolithModularNET.User.Core");
         
         services.AddMediatR(conf =>
             conf.RegisterServicesFromAssembly(assembly));

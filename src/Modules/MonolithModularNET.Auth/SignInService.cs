@@ -138,25 +138,50 @@ public class SignInService: ISignInService<AuthUser>
             throw new Exception("Refresh Token can't create, something went wrong!");
         }
         await SetRefreshTokenCacheAsync(user.Id, rfTokenResult.Token!, expiresTime, cancellationToken);
+
+
+        var userResponse = new UserResponse()
+        {
+            Id = user.Id,
+            UserName = user.UserName!,
+            AvatarUrl = user.AvatarUrl,
+            PhoneNumber = user.PhoneNumber,
+            PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+            EmailConfirmed = user.EmailConfirmed,
+            Email = user.Email!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            IsActive = user.IsActive
+        };
         
+        var userRoleNames = await _userManager.GetRolesAsync(user);
+
+        foreach (var userRoleName in userRoleNames)
+        {
+            var role = await _roleManager.FindByNameAsync(userRoleName);
+
+            if (role is null)
+            {
+                ArgumentNullException.ThrowIfNull(role);
+            }
+
+            var roleClaims = await _roleManager.GetClaimsAsync(role);
+
+            userResponse.Roles.Add(new RoleResponse()
+            {
+                Id = role.Id,
+                Name = role.Name,
+                NormalizedName = role.NormalizedName,
+
+                Permissions = roleClaims.Where(e => e.Type == AuthClaimTypes.Permission).Select(e => e.Value).ToList()
+            });
+        }
 
         return AuthResult.Success(new SignInResponse()
         {
             AccessToken = token,
             RefreshToken = rfTokenResult.Token,
-            User = new UserResponse()
-            {
-                Id = user.Id,
-                UserName = user.UserName!,
-                AvatarUrl = user.AvatarUrl,
-                PhoneNumber = user.PhoneNumber,
-                PhoneNumberConfirmed = user.PhoneNumberConfirmed,
-                EmailConfirmed = user.EmailConfirmed,
-                Email = user.Email!,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                IsActive = user.IsActive
-            }
+            User = userResponse 
         });
     }
 
