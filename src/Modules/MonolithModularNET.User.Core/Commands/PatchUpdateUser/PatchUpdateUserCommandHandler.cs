@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using MonolithModularNET.Auth.Core;
-using MonolithModularNET.Extensions.Abstractions;
 using MonolithModularNET.Extensions.Shared.Cqrs;
 using MonolithModularNET.Extensions.Shared.Models;
-using MonolithModularNET.User.Core;
 
-namespace MonolithModularNET.User.Commands.PatchUpdateUser;
+namespace MonolithModularNET.User.Core.Commands.PatchUpdateUser;
 
 public class PatchUpdateUserCommandHandler(UserManager<AuthUser> userManager, IMapper mapper)
     : CqrsCommandHandler<PatchUpdateUserCommand, UserResponse?>

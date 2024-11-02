@@ -1,7 +1,7 @@
 ﻿using MonolithModularNET.Extensions.Shared.Cqrs;
 using MonolithModularNET.Extensions.Shared.Models;
 
-namespace MonolithModularNET.User.Commands.PatchUpdateUser;
+namespace MonolithModularNET.User.Core.Commands.PatchUpdateUser;
 
 public class PatchUpdateUserCommand: CqrsCommand<UserResponse?>
 {
