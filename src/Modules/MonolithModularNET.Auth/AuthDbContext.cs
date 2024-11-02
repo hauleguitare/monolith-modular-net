@@ -105,6 +105,10 @@ public class AuthDbContext(
             Id = "root",
             Email = email,
             EmailConfirmed = true,
+            IsActive = true,
+            FirstName = "Super",
+            LastName = "Administrator",
+            SecurityStamp = Guid.NewGuid().ToString("N"),
             UserName = email,
             NormalizedUserName = email.ToUpper(),
             NormalizedEmail = email.ToUpper()
@@ -166,6 +170,16 @@ public class AuthDbContext(
                 Id = "new_user",
                 Name = "New User",
                 NormalizedName = "New User".ToUpper(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                IsDefault = true,
+                Priority = 999999
+            },
+            
+            new()
+            {
+                Id = "user",
+                Name = "User",
+                NormalizedName = "User".ToUpper(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 IsDefault = true,
                 Priority = 999999
