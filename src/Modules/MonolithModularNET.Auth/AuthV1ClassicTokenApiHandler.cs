@@ -20,7 +20,7 @@ public class AuthV1ClassicTokenApiHandler
                     Description = e.Description
                 }).ToList();
 
-            return Results.BadRequest(ApiResponse.Failure(errors));
+            return Results.BadRequest(ApiResponse.Failure(errors.ToArray()));
         }
 
         return Results.Ok(ApiResponse.Success(result));
@@ -40,7 +40,7 @@ public class AuthV1ClassicTokenApiHandler
                     Description = e.Description
                 }).ToList();
 
-            return Results.BadRequest(ApiResponse.Failure(errors));
+            return Results.BadRequest(ApiResponse.Failure(errors.ToArray()));
         }
         
         return Results.Ok(ApiResponse.Success(result));
@@ -60,7 +60,7 @@ public class AuthV1ClassicTokenApiHandler
                     Description = e.Description
                 }).ToList();
 
-            return Results.BadRequest(ApiResponse.Failure(errors));
+            return Results.BadRequest(ApiResponse.Failure(errors.ToArray()));
         }
         
         return Results.Ok(ApiResponse.Success(result));

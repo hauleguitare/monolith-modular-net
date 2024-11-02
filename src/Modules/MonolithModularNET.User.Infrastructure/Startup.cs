@@ -14,6 +14,7 @@ public static class Startup
         var group = app.MapGroup(pattern);
         group.MapGet("/self", userApiHandler.GetSelf).RequireAuthorization();
         group.MapGet("/{userId}", userApiHandler.GetByIdAsync).RequireAuthorization();
+        group.MapPatch("/{userId}", userApiHandler.PatchUpdateUser).RequireAuthorization();
 
         return app;
     }

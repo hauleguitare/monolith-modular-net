@@ -1,7 +1,7 @@
 ﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../types';
-import { UserResponse } from './types';
+import { UpdateUserRequest, UserResponse } from './types';
 
 @Injectable({providedIn: 'root'})
 export class ApiUserService
@@ -19,5 +19,10 @@ export class ApiUserService
     getBySelf()
     {
         return this._http.get<ApiResponse<UserResponse>>(`${this.endpoint}/self`)
+    }
+
+    update(id: string, user: UpdateUserRequest)
+    {
+        return this._http.patch<ApiResponse<UserResponse>>(`${this.endpoint}/${id}`, user);
     }
 }

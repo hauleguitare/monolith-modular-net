@@ -155,6 +155,7 @@ public class SignInService: ISignInService<AuthUser>
                 Email = user.Email!,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                IsActive = user.IsActive
             }
         });
     }

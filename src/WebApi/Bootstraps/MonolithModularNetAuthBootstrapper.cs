@@ -37,7 +37,9 @@ internal static class MonolithModularNetAuthBootstrapper
         services.AddMonolithModularNetAuthContext(opts =>
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-            opts.UseNpgsql(connectionString);
+            ArgumentNullException.ThrowIfNull(connectionString);
+            
+            opts.UseMySQL(connectionString);
 
             if (environment.IsDevelopment())
             {

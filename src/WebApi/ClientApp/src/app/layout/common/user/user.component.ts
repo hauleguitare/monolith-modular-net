@@ -4,6 +4,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    inject,
     Input,
     OnDestroy,
     OnInit,
@@ -13,11 +14,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from 'app/core/user/user.service';
 import { User } from 'app/core/user/user.types';
 import { Subject, takeUntil } from 'rxjs';
-import { cloneDeep } from 'lodash-es';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'user',
@@ -32,6 +33,7 @@ import { cloneDeep } from 'lodash-es';
         MatIconModule,
         NgClass,
         MatDividerModule,
+        RouterLink,
     ],
 })
 export class UserComponent implements OnInit, OnDestroy {
@@ -43,6 +45,7 @@ export class UserComponent implements OnInit, OnDestroy {
     user: User;
 
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private _dialog = inject(MatDialog);
 
     /**
      * Constructor
@@ -112,4 +115,5 @@ export class UserComponent implements OnInit, OnDestroy {
     signOut(): void {
         this._router.navigate(['/sign-out']);
     }
+
 }

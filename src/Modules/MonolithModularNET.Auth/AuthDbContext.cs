@@ -42,13 +42,11 @@ public class AuthDbContext(
             builder.IsAuditable();
         });
 
-        modelBuilder.HasSequence<int>("auth_v1_classic_token_claim_id_seq").IncrementsBy(1);
-
         modelBuilder.Entity<AuthV1ClassicTokenClaim>(builder =>
         {
             builder.HasKey(e => e.Id).HasName("AuthV1ClassicTokenClaim_pk");
 
-            builder.Property(e => e.Id).HasDefaultValueSql("nextval('auth_v1_classic_token_claim_id_seq'::regclass)");
+            builder.Property(e => e.Id).ValueGeneratedOnAdd();
         });
 
         SeedRootUser(modelBuilder);

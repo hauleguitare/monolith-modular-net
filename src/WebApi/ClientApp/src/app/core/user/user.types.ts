@@ -1,4 +1,5 @@
 export interface User {
+    isActive: boolean;
     id: string;
     name: string;
     firstName?: string;

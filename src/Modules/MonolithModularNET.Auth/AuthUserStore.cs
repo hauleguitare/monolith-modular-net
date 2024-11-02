@@ -13,7 +13,6 @@ public class AuthUserStore: UserStore<AuthUser>
     public AuthUserStore(AuthDbContext dbContext, IdentityErrorDescriber describer = null) : base(dbContext, describer)
     {
         _dbContext = dbContext;
-        AutoSaveChanges = false;
     }
 
 

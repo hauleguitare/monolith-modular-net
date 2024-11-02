@@ -20,7 +20,7 @@ public class AuthApiHandler
                     Description = e.Description
                 }).ToList();
 
-            return Results.BadRequest(ApiResponse.Failure(errors));
+            return Results.BadRequest(ApiResponse.Failure(errors.ToArray()));
         }
 
         return Results.Ok(ApiResponse.Success(result.Data));
@@ -41,7 +41,7 @@ public class AuthApiHandler
                     Description = e.Description
                 }).ToList();
 
-            return Results.BadRequest(ApiResponse.Failure(errors));
+            return Results.BadRequest(ApiResponse.Failure(errors.ToArray()));
         }
 
         return Results.Ok(ApiResponse.Success(result.Data));
@@ -62,7 +62,7 @@ public class AuthApiHandler
                     Description = e.Description
                 }).ToList();
 
-            return Results.BadRequest(ApiResponse.Failure(errors));
+            return Results.BadRequest(ApiResponse.Failure(errors.ToArray()));
         }
 
         return Results.Ok(ApiResponse.Success(result.Data));
@@ -83,7 +83,7 @@ public class AuthApiHandler
                     Description = e.Description
                 }).ToList();
 
-            return Results.BadRequest(ApiResponse.Failure(errors));
+            return Results.BadRequest(ApiResponse.Failure(errors.ToArray()));
         }
 
         return Results.Ok(ApiResponse.Success(result.Data));

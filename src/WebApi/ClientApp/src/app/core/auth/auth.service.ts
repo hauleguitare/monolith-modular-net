@@ -74,7 +74,8 @@ export class AuthService {
                 // Set user data
                 this._userService.user = {
                     ...response.result.user,
-                    name: `${response.result.user.firstName} + ${response.result.user.lastName}`,
+                    name: `${response.result.user.firstName} ${response.result.user.lastName}`,
+                    isActive: response.result.user.isActive,
                     status: 'online',
                 };
 

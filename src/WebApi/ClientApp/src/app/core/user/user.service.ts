@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { User } from 'app/core/user/user.types';
-import { map, Observable, ReplaySubject, switchMap, tap } from 'rxjs';
+import { map, Observable, ReplaySubject, tap } from 'rxjs';
 import { LocalStorageService } from '@fuse/services/local-storage/local-storage.service';
 import { ApiUserService } from '@api/user';
 
@@ -83,9 +83,14 @@ export class UserService {
      * @param user
      */
     update(user: User): Observable<any> {
-        return this._httpClient.patch<User>('api/common/user', { user }).pipe(
-            map((response) => {
-                this._user.next(response);
+        return this._apiUserService.update(user.id, {...user}).pipe(
+            map(({ result }) => {
+                this._user.next({
+                    ...result,
+                    name: `${result.firstName} ${result.lastName}`,
+                    isActive: result.isActive,
+                    status: 'online',
+                });
             })
         );
     }

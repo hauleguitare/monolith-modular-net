@@ -17,5 +17,12 @@
         "lastName": "Last name",
         "emailAddress": "Email address",
         "password": "Password"
+    },
+    "hint": {
+        "doNotHaveAnAccount": "Don't have an account?"
+    },
+    "nav": {
+        "signIn": "Sign In",
+        "signUp": "Sign Up"
     }
 }

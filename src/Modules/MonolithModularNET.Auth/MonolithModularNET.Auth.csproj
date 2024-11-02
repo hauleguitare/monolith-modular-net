@@ -16,15 +16,11 @@
         
       <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.10" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
+      <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.8" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\MonolithModularNET.Auth.Core\MonolithModularNET.Auth.Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Migrations\" />
     </ItemGroup>
 
 </Project>

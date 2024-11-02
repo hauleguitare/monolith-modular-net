@@ -10,11 +10,11 @@ public static class IsAuditableExtension
     {
         modelBuilder.Property(p => p.CreatedBy).HasColumnType("text");
         
-        modelBuilder.Property(p => p.CreatedAt).HasColumnType("timestamp with time zone");
+        modelBuilder.Property(p => p.CreatedAt).HasColumnType("datetime");
         
         modelBuilder.Property(p => p.ModifiedBy).HasColumnType("text");
         
-        modelBuilder.Property(p => p.ModifiedAt).HasColumnType("timestamp with time zone");
+        modelBuilder.Property(p => p.ModifiedAt).HasColumnType("datetime");
 
         return modelBuilder;
     }

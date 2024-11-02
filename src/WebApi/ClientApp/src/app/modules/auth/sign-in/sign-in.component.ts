@@ -20,7 +20,7 @@ import { AuthService } from 'app/core/auth/auth.service';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiErrorResponse } from '../../../../@api/types';
-import { TranslocoService } from '@ngneat/transloco';
+import { TranslocoPipe, TranslocoService } from '@ngneat/transloco';
 import { stringHelper } from '../../../../utils/stringHelper';
 
 @Component({
@@ -40,6 +40,7 @@ import { stringHelper } from '../../../../utils/stringHelper';
         MatIconModule,
         MatCheckboxModule,
         MatProgressSpinnerModule,
+        TranslocoPipe,
     ],
 })
 export class AuthSignInComponent implements OnInit {

@@ -19,7 +19,7 @@ public class ApiResponse: IResponse<ApiErrorResponse>
     }
     
 
-    public static ApiResponse Failure(ICollection<ApiErrorResponse> errors)
+    public static ApiResponse Failure(ICollection<IError> errors)
     {
         return new ApiResponse()
         {
