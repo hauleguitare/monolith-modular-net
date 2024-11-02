@@ -30,6 +30,15 @@ public class CqrsResult<TResponse>: ICqrsResult
     public IError[]? Errors { get; set; }
     public bool IsSuccess { get; set; } = false;
 
+    public static CqrsResult<TResponse> Failure(IError[] errors)
+    {
+        return new CqrsResult<TResponse>()
+        {
+            IsSuccess = false,
+            Errors = errors
+        };
+    }
+    
     public static CqrsResult<TResponse> Failure(CqrsError[] errors)
     {
         return new CqrsResult<TResponse>()

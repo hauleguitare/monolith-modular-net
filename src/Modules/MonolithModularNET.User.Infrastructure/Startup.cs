@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using MonolithModularNET.Extensions.Shared.Authorization;
 using MonolithModularNET.User.Infrastructure.Mapper;
 
 namespace MonolithModularNET.User.Infrastructure;
@@ -14,7 +15,9 @@ public static class Startup
         var group = app.MapGroup(pattern);
         group.MapGet("/self", userApiHandler.GetSelf).RequireAuthorization();
         group.MapGet("/{userId}", userApiHandler.GetByIdAsync).RequireAuthorization();
-        group.MapPatch("/{userId}", userApiHandler.PatchUpdateUser).RequireAuthorization();
+        group.MapPatch("/{userId}", userApiHandler.PatchUpdateUser).RequirePermissions("user:update");
+        group.MapPatch("/self", userApiHandler.PatchUpdateUserSelf).RequireAuthorization();
+        group.MapPost("/{userId}/set-roles", userApiHandler.SetRoles).RequirePermissions("user:set_roles");
 
         return app;
     }

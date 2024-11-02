@@ -11,4 +11,14 @@ export interface User {
     phoneNumberConfirmed: boolean;
     avatarUrl?: string;
     status?: string;
+    roles: Role[];
+}
+
+export interface Role {
+    id: string;
+    name?: string;
+    normalizedName?: string;
+    priority: number;
+    isDefault: boolean;
+    permissions: string[];
 }

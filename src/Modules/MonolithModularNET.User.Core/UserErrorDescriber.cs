@@ -1,4 +1,6 @@
-﻿namespace MonolithModularNET.User.Core;
+﻿using MonolithModularNET.Extensions.Abstractions;
+
+namespace MonolithModularNET.User.Core;
 
 public class UserErrorDescriber
 {
@@ -27,6 +29,15 @@ public class UserErrorDescriber
         {
             Code = nameof(RoleNotFound),
             Description = "RoleNotFound"
+        };
+    }
+
+    public UserError UserNotFound()
+    {
+        return new UserError()
+        {
+            Code = nameof(UserNotFound),
+            Description = nameof(UserNotFound)
         };
     }
 }

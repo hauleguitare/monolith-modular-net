@@ -172,7 +172,8 @@ public class SignInService: ISignInService<AuthUser>
                 Id = role.Id,
                 Name = role.Name,
                 NormalizedName = role.NormalizedName,
-
+                IsDefault = role.IsDefault,
+                Priority = role.Priority,
                 Permissions = roleClaims.Where(e => e.Type == AuthClaimTypes.Permission).Select(e => e.Value).ToList()
             });
         }

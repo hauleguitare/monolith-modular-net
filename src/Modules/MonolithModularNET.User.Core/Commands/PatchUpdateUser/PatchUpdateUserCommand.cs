@@ -5,14 +5,17 @@ namespace MonolithModularNET.User.Core.Commands.PatchUpdateUser;
 
 public class PatchUpdateUserCommand: CqrsCommand<UserResponse?>
 {
-    public PatchUpdateUserCommand(string email, string firstName, string lastName, bool isActive, string? avatarUrl)
+    public PatchUpdateUserCommand(string id, string email, string firstName, string lastName, bool isActive, string? avatarUrl)
     {
+        Id = id;
         Email = email;
         FirstName = firstName;
         LastName = lastName;
         IsActive = isActive;
         AvatarUrl = avatarUrl;
     }
+    
+    public string Id { get; set; }
 
     public string Email { get; set; }
     public string? FirstName { get; set; }

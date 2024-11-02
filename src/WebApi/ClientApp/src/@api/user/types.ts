@@ -9,6 +9,16 @@
     phoneNumber?: string;
     phoneNumberConfirmed: boolean;
     avatarUrl?: string;
+    roles: RoleResponse[];
+}
+
+export interface RoleResponse {
+    id: string;
+    name?: string;
+    normalizedName?: string;
+    priority: number;
+    isDefault: boolean;
+    permissions: string[];
 }
 
 export interface UpdateUserRequest {

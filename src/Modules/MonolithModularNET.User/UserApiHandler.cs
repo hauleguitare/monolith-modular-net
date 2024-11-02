@@ -1,10 +1,14 @@
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MonolithModularNET.Extensions.Shared.Models;
 using MonolithModularNET.Extensions.Shared.Services;
 using MonolithModularNET.User.Core.Commands.PatchUpdateUser;
+using MonolithModularNET.User.Core.Commands.SetRoles;
 using MonolithModularNET.User.Core.Queries.GetUserById;
+using MonolithModularNET.User.Models;
 
 namespace MonolithModularNET.User;
 
@@ -31,9 +35,45 @@ public class UserApiHandler
         return Results.Ok(ApiResponse.Success(result));
     }
 
-    public async Task<IResult> PatchUpdateUser(string userId, [FromBody] PatchUpdateUserCommand command, [FromServices] ISender sender)
+    public async Task<IResult> PatchUpdateUser(string userId, [FromBody] PatchUpdateUserRequest request, [FromServices] IMapper mapper, [FromServices] ISender sender)
     {
+
+        var command = mapper.Map<PatchUpdateUserCommand>(request);
+        command.Id = userId;
+        
         var result = await sender.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return Results.BadRequest(ApiResponse.Failure(result.Errors!));
+        }
+
+        return Results.Ok(ApiResponse.Success(result.Result));
+    }
+
+    public async Task<IResult> PatchUpdateUserSelf([FromBody] PatchUpdateUserRequest request, [FromServices] ICurrentUserService currentUserService,
+        [FromServices] IMapper mapper, [FromServices] ISender sender)
+    {
+        if (!currentUserService.IsAuthenticated)
+        {
+            return Results.Unauthorized();
+        }
+
+        var command = mapper.Map<PatchUpdateUserCommand>(request);
+
+        var result = await sender.Send(command);
+
+        if (!result.IsSuccess)
+        {
+            return Results.BadRequest(ApiResponse.Failure(result.Errors!));
+        }
+
+        return Results.Ok(ApiResponse.Success(result.Result));
+    }
+
+    public async Task<IResult> SetRoles(string userId, [FromBody] SetRolesRequest request, [FromServices] ISender sender)
+    {
+        var result = await sender.Send(new SetRolesCommand(userId, request.RoleNames));
 
         if (!result.IsSuccess)
         {

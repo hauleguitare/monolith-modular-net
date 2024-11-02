@@ -48,7 +48,8 @@ public class GetUserByIdQueryHandler: CqrsQueryHandler<GetUserByIdQuery, UserRes
                 Id = role.Id,
                 Name = role.Name,
                 NormalizedName = role.NormalizedName,
-
+                IsDefault = role.IsDefault,
+                Priority = role.Priority,
                 Permissions = claims.Where(e => e.Type == AuthClaimTypes.Permission).Select(e => e.Value).ToList()
             });
         }
