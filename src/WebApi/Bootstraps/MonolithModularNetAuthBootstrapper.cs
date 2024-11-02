@@ -51,7 +51,7 @@ internal static class MonolithModularNetAuthBootstrapper
             .AddAuthJwtTokenOptions(options =>
             {
                 options.SecretKey = securitySettings.JwtSecretKey;
-                options.ExpiresInMinutes = 1;
+                options.ExpiresInMinutes = 60;
             });
         
         
