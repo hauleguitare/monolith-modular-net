@@ -20,10 +20,10 @@
 
     <ItemGroup>
       <Reference Include="Microsoft.AspNetCore.Authorization">
-        <HintPath>C:\Program Files (x86)\dotnet\shared\Microsoft.AspNetCore.App\8.0.7\Microsoft.AspNetCore.Authorization.dll</HintPath>
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.7\Microsoft.AspNetCore.Authorization.dll</HintPath>
       </Reference>
       <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-        <HintPath>C:\Program Files (x86)\dotnet\shared\Microsoft.AspNetCore.App\8.0.7\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.7\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
       </Reference>
     </ItemGroup>
 </Project>
