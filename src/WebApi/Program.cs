@@ -65,4 +65,7 @@ app.MapMonolithModularNetAuthApi();
 // map api/users
 app.MapMonolithModularNetUserApi();
 
+// map api/roles
+app.MapMonolithModularNetRoleApi();
+
 app.Run();

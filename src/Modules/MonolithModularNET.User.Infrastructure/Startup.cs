@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using MonolithModularNET.Extensions.Shared.Authorization;
+using MonolithModularNET.Extensions.Shared.Permissions;
 using MonolithModularNET.User.Infrastructure.Mapper;
 
 namespace MonolithModularNET.User.Infrastructure;
@@ -12,12 +13,24 @@ public static class Startup
         [StringSyntax("Route")] string pattern = "/api/users")
     {
         var userApiHandler = new UserApiHandler();
-        var group = app.MapGroup(pattern);
-        group.MapGet("/self", userApiHandler.GetSelf).RequireAuthorization();
-        group.MapGet("/{userId}", userApiHandler.GetByIdAsync).RequireAuthorization();
-        group.MapPatch("/{userId}", userApiHandler.PatchUpdateUser).RequirePermissions("user:update");
-        group.MapPatch("/self", userApiHandler.PatchUpdateUserSelf).RequireAuthorization();
-        group.MapPost("/{userId}/set-roles", userApiHandler.SetRoles).RequirePermissions("user:set_roles");
+        var group = app.MapGroup(pattern).RequireAuthorization();
+        group.MapGet("/", userApiHandler.GetAsync).RequirePermissions(UserPermissions.ViewAll);
+        group.MapGet("/{userId}", userApiHandler.GetByIdAsync);
+        group.MapPut("/{userId}", userApiHandler.UpdateUser).RequirePermissions(UserPermissions.Update, UserPermissions.SetRoles);
+        group.MapGet("/self", userApiHandler.GetSelf);
+        group.MapPatch("/self", userApiHandler.PatchUpdateUserSelf);
+        return app;
+    }
+
+    public static WebApplication MapMonolithModularNetRoleApi(this WebApplication app,
+        [StringSyntax("Route")] string pattern = "/api/roles")
+    {
+        var roleApiHandler = new RoleApiHandler();
+        var group = app.MapGroup(pattern).RequireAuthorization();
+
+        group.MapGet("/", roleApiHandler.GetAsync).RequirePermissions(RolePermissions.ViewAll);
+        group.MapGet("/{roleId}", roleApiHandler.GetByIdAsync).RequirePermissions(RolePermissions.ViewAll);
+        group.MapPut("/{roleId}", roleApiHandler.UpdateAsync).RequirePermissions(RolePermissions.Update, RolePermissions.SetPermissions);
 
         return app;
     }

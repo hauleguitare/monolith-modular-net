@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Abstractions;
+using MonolithModularNET.Extensions.Shared.Permissions;
 
 namespace MonolithModularNET.Auth;
 
@@ -62,34 +63,116 @@ public class AuthDbContext(
     {
         var roleClaims = new List<IdentityRoleClaim<string>>()
         {
+            // Classic token
             new()
             {
                 Id = 1,
                 RoleId = "owner",
-                ClaimValue = "v1_classic_token:create",
+                ClaimValue = AuthPermissions.V1ClassicTokenCreate,
                 ClaimType = AuthClaimTypes.Permission
             },
             new()
             {
                 Id = 2,
                 RoleId = "owner",
-                ClaimValue = "v1_classic_token:update",
+                ClaimValue = AuthPermissions.V1ClassicTokenUpdate,
                 ClaimType = AuthClaimTypes.Permission
             },
             new()
             {
                 Id = 3,
                 RoleId = "owner",
-                ClaimValue = "v1_classic_token:delete",
+                ClaimValue = AuthPermissions.V1ClassicTokenDelete,
                 ClaimType = AuthClaimTypes.Permission
             },
             new()
             {
                 Id = 4,
                 RoleId = "owner",
-                ClaimValue = "v1_classic_token:view_all",
+                ClaimValue = AuthPermissions.V1ClassicTokenViewAll,
                 ClaimType = AuthClaimTypes.Permission
-            }
+            },
+            new()
+            {
+                Id = 5,
+                RoleId = "owner",
+                ClaimValue = AuthPermissions.V1ClassicTokenSetRoles,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            
+            // User
+            new()
+            {
+                Id = 6,
+                RoleId = "owner",
+                ClaimValue = UserPermissions.Create,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            new()
+            {
+                Id = 7,
+                RoleId = "owner",
+                ClaimValue = UserPermissions.Update,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            new()
+            {
+                Id = 8,
+                RoleId = "owner",
+                ClaimValue = UserPermissions.Delete,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            new()
+            {
+                Id = 9,
+                RoleId = "owner",
+                ClaimValue = UserPermissions.SetRoles,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            new()
+            {
+                Id = 10,
+                RoleId = "owner",
+                ClaimValue = UserPermissions.ViewAll,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            
+            // Role
+            new()
+            {
+                Id = 11,
+                RoleId = "owner",
+                ClaimValue = RolePermissions.Create,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            new()
+            {
+                Id = 12,
+                RoleId = "owner",
+                ClaimValue = RolePermissions.Update,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            new()
+            {
+                Id = 13,
+                RoleId = "owner",
+                ClaimValue = RolePermissions.Delete,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            new()
+            {
+                Id = 14,
+                RoleId = "owner",
+                ClaimValue = RolePermissions.SetPermissions,
+                ClaimType = AuthClaimTypes.Permission
+            },
+            new()
+            {
+                Id = 15,
+                RoleId = "owner",
+                ClaimValue = RolePermissions.ViewAll,
+                ClaimType = AuthClaimTypes.Permission
+            },
         };
 
         modelBuilder.Entity<IdentityRoleClaim<string>>().HasData(roleClaims);
@@ -149,9 +232,9 @@ public class AuthDbContext(
             },
             new()
             {
-                Id = "super_administrator",
-                Name = "Super Administrator",
-                NormalizedName = "Super Administrator".ToUpper(),
+                Id = "administrator",
+                Name = "Administrator",
+                NormalizedName = "Administrator".ToUpper(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
                 IsDefault = true,
                 Priority = 1
@@ -165,16 +248,6 @@ public class AuthDbContext(
                 IsDefault = true,
                 Priority = 2
             },
-            new()
-            {
-                Id = "new_user",
-                Name = "New User",
-                NormalizedName = "New User".ToUpper(),
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                IsDefault = true,
-                Priority = 999999
-            },
-            
             new()
             {
                 Id = "user",

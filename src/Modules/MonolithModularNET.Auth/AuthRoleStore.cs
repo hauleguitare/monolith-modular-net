@@ -8,6 +8,5 @@ public class AuthRoleStore: RoleStore<AuthRole>
 {
     public AuthRoleStore(AuthDbContext dbContext, IdentityErrorDescriber? describer = null) : base(dbContext, describer)
     {
-        AutoSaveChanges = false;
     }
 }

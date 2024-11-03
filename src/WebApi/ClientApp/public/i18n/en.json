@@ -24,5 +24,13 @@
     "nav": {
         "signIn": "Sign In",
         "signUp": "Sign Up"
+    },
+    "title": {
+        "succeed": "Succeed",
+        "failed": "Failed"
+    },
+    "message": {
+        "operationSuccessful": "Operation was successful",
+        "operationFailed": "Operation was failed, please try again."
     }
 }

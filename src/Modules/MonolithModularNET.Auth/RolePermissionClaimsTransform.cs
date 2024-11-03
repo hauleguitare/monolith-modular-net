@@ -19,47 +19,16 @@ public class RolePermissionClaimsTransform(RoleManager<AuthRole> roleManager, IA
         {
             foreach (var currentRoleId in currentRoleIds)
             {
-                var cacheQueryString = new CacheQueryBuilder().Append(AuthCacheSchemas.Roles).Append(currentRoleId)
-                    .ToString();
+                var role = await roleManager.FindByIdAsync(currentRoleId);
 
-                var cacheRole = await cacheService.GetAsync<CacheAuthRole>(cacheQueryString);
-
-                if (cacheRole is null)
+                if (role is null)
                 {
-                    var role = await roleManager.FindByIdAsync(currentRoleId);
-
-                    if (role is null)
-                    {
-                        return principal;
-                    }
-                    
-                    var roleClaims = await roleManager.GetClaimsAsync(role);
-
-                    cacheRole = new CacheAuthRole()
-                    {
-                        Id = role.Id,
-                        Priority = role.Priority,
-                        ConcurrencyStamp = role.ConcurrencyStamp,
-                        NormalizedName = role.NormalizedName,
-                        IsDefault = role.IsDefault,
-                        Claims = roleClaims.Where(e => e.Type == AuthClaimTypes.Permission).Select(e => new CacheAuthClaim()
-                        {
-                            Value = e.Value,
-                            Type = e.Type,
-                            ValueType = e.ValueType,
-                            Properties = e.Properties,
-                            Issuer = e.Issuer,
-                            Subject = e.Subject,
-                            OriginalIssuer = e.OriginalIssuer
-                            
-                        }).ToList()
-                    };
-                    
-                    await AddCacheIfNullAsync(role, roleClaims);
-
+                    return principal;
                 }
-              
-                foreach (var roleClaim in cacheRole.Claims)
+                    
+                var roleClaims = await roleManager.GetClaimsAsync(role);
+                var permissionClaims = roleClaims.Where(e => e.Type == AuthClaimTypes.Permission);
+                foreach (var roleClaim in permissionClaims)
                 {
                     claimsIdentity.AddClaim(new Claim(AuthClaimTypes.Permission, roleClaim.Value!));
                 }

@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Navigation } from 'app/core/navigation/navigation.types';
-import { Observable, ReplaySubject, tap } from 'rxjs';
+import { Observable, ReplaySubject, switchMap, tap } from 'rxjs';
+import { UserService } from '../user/user.service';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
     private _httpClient = inject(HttpClient);
+    private _userService = inject(UserService);
     private _navigation: ReplaySubject<Navigation> =
         new ReplaySubject<Navigation>(1);
 

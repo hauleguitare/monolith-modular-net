@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { distinctUntilChanged, skipWhile, Subject, takeUntil, takeWhile } from 'rxjs';
+import { defer, distinctUntilChanged, finalize, skipWhile, Subject, switchMap, takeUntil, takeWhile } from 'rxjs';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -14,6 +14,7 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { UserService } from '../../../core/user/user.service';
 import { User } from '../../../core/user/user.types';
 import { cloneDeep } from 'lodash-es';
+import { AppNotificationService } from '../../../services/app-notification.service';
 
 @Component({
     selector: 'app-user-settings-account',
@@ -42,6 +43,8 @@ export class UserSettingsAccountComponent implements OnInit, OnDestroy
     private readonly _unsubscribeAll$ = new Subject<void>();
     formGroup: UntypedFormGroup;
     private _defaultUser: User;
+    private _appNotificationService = inject(AppNotificationService)
+    isLoading: boolean = false;
 
     _formBuilder = inject(UntypedFormBuilder);
     _userService = inject(UserService);
@@ -49,7 +52,6 @@ export class UserSettingsAccountComponent implements OnInit, OnDestroy
     ngOnInit(): void {
         // Create the form
         this.formGroup = this._formBuilder.group({
-            id       : ['', Validators.required],
             firstName: ['', Validators.required],
             lastName: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
@@ -63,7 +65,6 @@ export class UserSettingsAccountComponent implements OnInit, OnDestroy
                 takeUntil(this._unsubscribeAll$)
             ).subscribe((user) => {
                 this.formGroup.patchValue({
-                    id: user.id,
                     firstName: user.firstName,
                     lastName: user.lastName,
                     email: user.email,
@@ -88,12 +89,17 @@ export class UserSettingsAccountComponent implements OnInit, OnDestroy
         }
 
 
-        this._userService.update({...this.formGroup.value})
-            .pipe(
-                takeUntil(this._unsubscribeAll$)
-            ).subscribe(() => {
-                console.log("success");
+        defer(() => {
+            this.isLoading = true;
+            return this._userService.update({...this.formGroup.value});
         })
+            .pipe(
+                takeUntil(this._unsubscribeAll$),
+
+                switchMap(() => this._appNotificationService.success()),
+
+                finalize(() => this.isLoading = false)
+            ).subscribe()
 
     }
 }

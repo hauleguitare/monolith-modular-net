@@ -1,4 +1,6 @@
-﻿export interface UserResponse {
+﻿import { RoleResponse } from '../role';
+
+export interface UserResponse {
     isActive: boolean;
     id: string;
     userName: string;
@@ -12,13 +14,13 @@
     roles: RoleResponse[];
 }
 
-export interface RoleResponse {
-    id: string;
-    name?: string;
-    normalizedName?: string;
-    priority: number;
-    isDefault: boolean;
-    permissions: string[];
+export interface PatchUpdateUserRequest {
+    firstName?: string;
+    lastName?: string;
+    email: string;
+    phoneNumber?: string;
+    phoneNumberConfirmed: boolean;
+    avatarUrl?: string;
 }
 
 export interface UpdateUserRequest {
@@ -28,4 +30,5 @@ export interface UpdateUserRequest {
     phoneNumber?: string;
     phoneNumberConfirmed: boolean;
     avatarUrl?: string;
+    roleNames: string[];
 }

@@ -11,6 +11,7 @@ using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Abstractions;
 using MonolithModularNET.Extensions.Shared.Authorization;
 using MonolithModularNET.Extensions.Shared.Cache;
+using MonolithModularNET.Extensions.Shared.Permissions;
 using MonolithModularNET.Extensions.Shared.Services;
 
 namespace MonolithModularNET.Auth;
@@ -29,9 +30,9 @@ public static class Startup
 
         var authV1ClassicTokenGroup = group.MapGroup("classic-tokens");
         var authV1ClassicTokenApiHandler = new AuthV1ClassicTokenApiHandler();
-        authV1ClassicTokenGroup.MapPost("/", authV1ClassicTokenApiHandler.CreateAsync).RequirePermissions("v1_classic_token:create");
-        authV1ClassicTokenGroup.MapGet("/", authV1ClassicTokenApiHandler.GetAsync).RequirePermissions("v1_classic_token:view_all");
-        authV1ClassicTokenGroup.MapDelete("/{token}", authV1ClassicTokenApiHandler.DeleteAsync).RequirePermissions("v1_classic_token:delete");
+        authV1ClassicTokenGroup.MapPost("/", authV1ClassicTokenApiHandler.CreateAsync).RequirePermissions(AuthPermissions.V1ClassicTokenCreate);
+        authV1ClassicTokenGroup.MapGet("/", authV1ClassicTokenApiHandler.GetAsync).RequirePermissions(AuthPermissions.V1ClassicTokenViewAll);
+        authV1ClassicTokenGroup.MapDelete("/{token}", authV1ClassicTokenApiHandler.DeleteAsync).RequirePermissions(AuthPermissions.V1ClassicTokenDelete);
         return app;
     }
 
@@ -87,6 +88,7 @@ public static class Startup
         services.AddIdentityCore<AuthUser>()
             .AddRoles<AuthRole>()
             .AddUserManager<AuthUserManager>()
+            .AddRoleManager<AuthRoleManager>()
             .AddUserStore<AuthUserStore>()
             .AddRoleStore<AuthRoleStore>()
             .AddEntityFrameworkStores<AuthDbContext>();

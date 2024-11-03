@@ -30,7 +30,7 @@ public class CqrsResult<TResponse>: ICqrsResult
     public IError[]? Errors { get; set; }
     public bool IsSuccess { get; set; } = false;
 
-    public static CqrsResult<TResponse> Failure(IError[] errors)
+    public static CqrsResult<TResponse> Failure(params IError[] errors)
     {
         return new CqrsResult<TResponse>()
         {
@@ -39,7 +39,7 @@ public class CqrsResult<TResponse>: ICqrsResult
         };
     }
     
-    public static CqrsResult<TResponse> Failure(CqrsError[] errors)
+    public static CqrsResult<TResponse> Failure(params CqrsError[] errors)
     {
         return new CqrsResult<TResponse>()
         {

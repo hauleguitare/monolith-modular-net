@@ -4,6 +4,7 @@ import { User } from 'app/core/user/user.types';
 import { map, Observable, ReplaySubject, tap } from 'rxjs';
 import { LocalStorageService } from '@fuse/services/local-storage/local-storage.service';
 import { ApiUserService } from '@api/user';
+import { cloneDeep } from 'lodash-es';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -11,6 +12,7 @@ export class UserService {
     private _user: ReplaySubject<User> = new ReplaySubject<User>(1);
     private _localStorageService = inject(LocalStorageService);
     private _apiUserService = inject(ApiUserService);
+    private _currentUser?: User;
 
     // -----------------------------------------------------------------------------------------------------
     // @ Accessors
@@ -27,6 +29,10 @@ export class UserService {
 
     get user$(): Observable<User> {
         return this._user.asObservable();
+    }
+
+    get user() {
+        return this._currentUser;
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -48,6 +54,7 @@ export class UserService {
             }),
 
             tap((user) => {
+                this._currentUser = cloneDeep(user);
                 this._user.next(user);
             })
         );
@@ -83,7 +90,7 @@ export class UserService {
      * @param user
      */
     update(user: User): Observable<any> {
-        return this._apiUserService.update(user.id, {...user}).pipe(
+        return this._apiUserService.updateBySelf({...user}).pipe(
             map(({ result }) => {
                 this._user.next({
                     ...result,

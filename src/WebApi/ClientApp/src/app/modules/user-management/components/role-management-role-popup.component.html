@@ -1,0 +1,100 @@
+<div class="min-w-0 md:w-200 w-100 overflow-hidden relative">
+    <!--Header-->
+    <div class="flex justify-between items-center mb-4">
+        <div class="text-xl dark:text-white font-medium leading-none tracking-tight">
+            {{ properties.title | transloco }}
+        </div>
+
+        <button (click)="cancel()" mat-icon-button color="accent">
+            <mat-icon svgIcon="heroicons_outline:x-mark"></mat-icon>
+        </button>
+    </div>
+
+    <!--Content-->
+    <div class="mt-8 overflow-y-auto sm:h-120 sm:max-h-120">
+        <div class="w-full max-w-3xl">
+            <form [formGroup]="formGroup">
+                <div class="w-full">
+                    <div class="text-xl">Profile</div>
+                    <div class="text-secondary"> Following information is publicly displayed, be careful!</div>
+                </div>
+
+                <div class="mt-8 grid w-full gap-6 sm:grid-cols-4">
+                    <div class="sm:col-span-2">
+                        <mat-form-field class="w-full">
+                            <mat-label>{{ 'label.name' | transloco }}</mat-label>
+                            <input [readonly]="true" id="name" matInput [formControlName]="'name'" />
+                            @if (formGroup.get('name').hasError('required')) {
+                                <mat-error> {{ 'error.nameRequired' | transloco }} </mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <mat-form-field class="w-full">
+                            <mat-label>{{ 'label.priority' | transloco }}</mat-label>
+                            <input [readonly]="true" id="priority" matInput [formControlName]="'priority'" />
+                            @if (formGroup.get('name').hasError('required')) {
+                                <mat-error> {{ 'error.priorityRequired' | transloco }} </mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+
+                    <div class="flex items-center justify-between sm:col-span-4">
+                        <div class="flex-auto cursor-pointer">
+                            <div class="font-medium leading-6"> {{ 'label.default' | transloco }} </div>
+                            <div class="text-secondary text-md"> Default is default role in system. </div>
+                        </div>
+
+                        <mat-slide-toggle color="primary" [disabled]="true" [formControlName]="'isDefault'"></mat-slide-toggle>
+                    </div>
+
+
+                    <!-- Roles -->
+
+
+                    <div class="flex flex-col sm:col-span-4">
+
+                        <div class="flex-auto mb-4">
+                            <div class="font-medium leading-6"> Permissions </div>
+                            <div class="text-secondary text-md"> Grant permissions for role </div>
+                        </div>
+
+                        <mat-tab-group>
+                            <mat-tab label="{{ 'label.role' | transloco }}">
+                                @for (rolePermissionSection of permissionSection.roles; track rolePermissionSection.value) {
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex-auto cursor-pointer">
+                                            <div class="font-medium leading-6"> {{ rolePermissionSection.title }} </div>
+                                            <div class="text-secondary text-md"> {{ rolePermissionSection.description }} </div>
+                                        </div>
+
+                                        <mat-slide-toggle [checked]="hasPermission(rolePermissionSection.value)" (change)="toggleChange($event, rolePermissionSection.value)" color="primary"></mat-slide-toggle>
+                                    </div>
+                                }
+                            </mat-tab>
+                            <mat-tab label="{{ 'label.user' | transloco }}">
+                                @for (userPermissionSection of permissionSection.user; track userPermissionSection.value) {
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex-auto cursor-pointer">
+                                            <div class="font-medium leading-6"> {{ userPermissionSection.title }} </div>
+                                            <div class="text-secondary text-md"> {{ userPermissionSection.description }} </div>
+                                        </div>
+
+                                        <mat-slide-toggle [checked]="hasPermission(userPermissionSection.value)" (change)="toggleChange($event, userPermissionSection.value)" color="primary"></mat-slide-toggle>
+                                    </div>
+                                }
+                            </mat-tab>
+                        </mat-tab-group>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end mt-4">
+        <button [disabled]="isLoading" (click)="save()" mat-flat-button color="primary">{{ 'button.save' | transloco }}</button>
+    </div>
+</div>

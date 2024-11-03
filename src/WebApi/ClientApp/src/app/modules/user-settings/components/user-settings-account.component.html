@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="sm:col-span-4 flex gap-2.5 justify-end">
-                        <button type="button" mat-flat-button color="primary">{{ 'button.verify' | transloco }}</button>
+                        <button [disabled]="isLoading" type="button" mat-flat-button color="primary">{{ 'button.verify' | transloco }}</button>
                     </div>
 
 
@@ -67,7 +67,7 @@
 
 
                     <div class="sm:col-span-4 flex gap-2.5 justify-end">
-                        <button (click)="submit()" type="submit" mat-flat-button color="primary">{{ 'button.save' | transloco }}</button>
+                        <button [disabled]="isLoading" (click)="submit()" type="submit" mat-flat-button color="primary">{{ 'button.save' | transloco }}</button>
                     </div>
                 </div>
             </form>

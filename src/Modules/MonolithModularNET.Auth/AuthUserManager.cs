@@ -18,6 +18,55 @@ public class AuthUserManager: UserManager<AuthUser>
         _roleStore = roleStore;
     }
 
+    public override async Task<IdentityResult> AddToRolesAsync(AuthUser user, IEnumerable<string> roles)
+    {
+        ThrowIfDisposed();
+        ArgumentNullException.ThrowIfNull(user);
+
+        foreach (var roleName in roles)
+        {
+            var normalizedRole = NormalizeName(roleName);
+
+            var role = await _roleStore.FindByNameAsync(normalizedRole, CancellationToken);
+
+            _authDbContext.UserRoles.Add(new IdentityUserRole<string>()
+            {
+                UserId = user.Id,
+                RoleId = role!.Id!
+            });
+        }
+        
+        return await UpdateUserAsync(user).ConfigureAwait(false);
+    }
+
+    public override async Task<IdentityResult> RemoveFromRolesAsync(AuthUser user, IEnumerable<string> roles)
+    {
+        ThrowIfDisposed();
+        ArgumentNullException.ThrowIfNull(user);
+
+        var describer = new IdentityErrorDescriber();
+        foreach (var roleName in roles)
+        {
+            var normalizedRole = NormalizeName(roleName);
+
+            var role = await _roleStore.FindByNameAsync(normalizedRole, CancellationToken);
+
+            if (role is null)
+            {
+                return IdentityResult.Failed(describer.InvalidRoleName(roleName));
+            }
+
+            var userRole = await _authDbContext.UserRoles.Where(e => e.UserId == user.Id && e.RoleId == role.Id).FirstOrDefaultAsync();
+
+            if (userRole is not null)
+            {
+                _authDbContext.UserRoles.Remove(userRole);
+            }
+        }
+        
+        return await UpdateUserAsync(user).ConfigureAwait(false);
+    }
+
     public override async Task<IdentityResult> AddToRoleAsync(AuthUser user, string roleName)
     {
         ThrowIfDisposed();

@@ -1,0 +1,101 @@
+<div class="min-w-0 md:w-200 w-100 overflow-hidden relative">
+    <!--Header-->
+    <div class="flex justify-between items-center mb-4">
+        <div class="text-xl dark:text-white font-medium leading-none tracking-tight">
+            {{ properties.title | transloco }}
+        </div>
+
+        <button (click)="cancel()" mat-icon-button color="accent">
+            <mat-icon svgIcon="heroicons_outline:x-mark"></mat-icon>
+        </button>
+    </div>
+
+    <!--Content-->
+    <div class="mt-8 overflow-y-auto sm:h-120 sm:max-h-120">
+        <div class="w-full max-w-3xl">
+            <form [formGroup]="formGroup">
+                <div class="w-full">
+                    <div class="text-xl">Profile</div>
+                    <div class="text-secondary"> Following information is publicly displayed, be careful!</div>
+                </div>
+
+                <div class="mt-8 grid w-full gap-6 sm:grid-cols-4">
+                    <div class="sm:col-span-2">
+                        <mat-form-field class="w-full">
+                            <mat-label>{{ 'label.firstName' | transloco }}</mat-label>
+                            <input id="firstName" matInput [formControlName]="'firstName'" />
+                            @if (formGroup.get('firstName').hasError('required')) {
+                                <mat-error> {{ 'error.firstNameRequired' | transloco }} </mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <mat-form-field class="w-full">
+                            <mat-label>{{ 'label.lastName' | transloco }}</mat-label>
+                            <input id="lastName" matInput [formControlName]="'lastName'" />
+                            @if (formGroup.get('lastName').hasError('required')) {
+                                <mat-error> {{ 'error.lastNameRequired' | transloco }} </mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+                    <div class="sm:col-span-4 flex gap-2.5">
+                        <mat-form-field class="w-full">
+                            <mat-label>{{ 'label.emailAddress' | transloco }}</mat-label>
+                            <input id="email" matInput [formControlName]="'email'" />
+                            @if (formGroup.get('email').hasError('required')) {
+                                <mat-error> {{ 'error.emailAddressRequired' | transloco }} </mat-error>
+                            }
+
+
+                            @if (formGroup.get('emailConfirmed').value) {
+                                <mat-icon matIconSuffix [ngClass]="'text-green-600'" matTooltip="{{ 'label.verified' | transloco }}">verified</mat-icon>
+                            } @else {
+                                <mat-icon matIconSuffix [ngClass]="'text-red-600'" matTooltip="{{ 'label.notVerified' | transloco }}">info</mat-icon>
+                            }
+                        </mat-form-field>
+                    </div>
+
+
+                    <div class="flex items-center justify-between sm:col-span-4">
+                        <div class="flex-auto cursor-pointer">
+                            <div class="font-medium leading-6"> {{ 'label.activated' | transloco }} </div>
+                            <div class="text-secondary text-md"> When you want to activate account. You just access even you have grant and active your account. </div>
+                        </div>
+
+                        <mat-slide-toggle color="primary" [formControlName]="'isActive'"></mat-slide-toggle>
+                    </div>
+
+
+                    <!-- Roles -->
+
+
+                    <div class="flex flex-col sm:col-span-4">
+
+                        <div class="flex-auto mb-4">
+                            <div class="font-medium leading-6"> Roles </div>
+                            <div class="text-secondary text-md"> Grant roles for user </div>
+                        </div>
+
+
+                        @for (roleSection of roleSections; track roleSection.value) {
+                            <div class="flex items-center justify-between">
+                                <div class="flex-auto cursor-pointer">
+                                    <div class="font-medium leading-6"> {{ roleSection.title }} </div>
+                                    <div class="text-secondary text-md"> {{ roleSection.description }} </div>
+                                </div>
+                                <mat-slide-toggle [checked]="hasRoles(roleSection.value)" (change)="toggleChange($event,roleSection.value)" color="primary"></mat-slide-toggle>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end mt-4">
+        <button [disabled]="isLoading" (click)="save()" mat-flat-button color="primary">{{ 'button.save' | transloco }}</button>
+    </div>
+</div>
