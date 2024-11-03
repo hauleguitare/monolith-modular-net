@@ -44,7 +44,7 @@
                     <div class="flex items-center justify-between sm:col-span-4">
                         <div class="flex-auto cursor-pointer">
                             <div class="font-medium leading-6"> {{ 'label.default' | transloco }} </div>
-                            <div class="text-secondary text-md"> Default is default role in system. </div>
+                            <div class="text-secondary text-md"> {{'content.defaultIsDefaultRoleInSystem' | transloco}} </div>
                         </div>
 
                         <mat-slide-toggle color="primary" [disabled]="true" [formControlName]="'isDefault'"></mat-slide-toggle>
@@ -57,8 +57,8 @@
                     <div class="flex flex-col sm:col-span-4">
 
                         <div class="flex-auto mb-4">
-                            <div class="font-medium leading-6"> Permissions </div>
-                            <div class="text-secondary text-md"> Grant permissions for role </div>
+                            <div class="font-medium leading-6"> {{ 'title.roles' | transloco }} </div>
+                            <div class="text-secondary text-md"> {{'content.grantPermissionsForRole' | transloco }} </div>
                         </div>
 
                         <mat-tab-group>
@@ -66,8 +66,8 @@
                                 @for (rolePermissionSection of permissionSection.roles; track rolePermissionSection.value) {
                                     <div class="flex items-center justify-between">
                                         <div class="flex-auto cursor-pointer">
-                                            <div class="font-medium leading-6"> {{ rolePermissionSection.title }} </div>
-                                            <div class="text-secondary text-md"> {{ rolePermissionSection.description }} </div>
+                                            <div class="font-medium leading-6"> {{ rolePermissionSection.title | transloco }} </div>
+                                            <div class="text-secondary text-md"> {{ rolePermissionSection.description | transloco }} </div>
                                         </div>
 
                                         <mat-slide-toggle [checked]="hasPermission(rolePermissionSection.value)" (change)="toggleChange($event, rolePermissionSection.value)" color="primary"></mat-slide-toggle>
@@ -78,8 +78,8 @@
                                 @for (userPermissionSection of permissionSection.user; track userPermissionSection.value) {
                                     <div class="flex items-center justify-between">
                                         <div class="flex-auto cursor-pointer">
-                                            <div class="font-medium leading-6"> {{ userPermissionSection.title }} </div>
-                                            <div class="text-secondary text-md"> {{ userPermissionSection.description }} </div>
+                                            <div class="font-medium leading-6"> {{ userPermissionSection.title | transloco }} </div>
+                                            <div class="text-secondary text-md"> {{ userPermissionSection.description | transloco }} </div>
                                         </div>
 
                                         <mat-slide-toggle [checked]="hasPermission(userPermissionSection.value)" (change)="toggleChange($event, userPermissionSection.value)" color="primary"></mat-slide-toggle>

@@ -33,13 +33,13 @@ export class UserManagementComponent implements OnInit, OnDestroy
     catalog: {icon: string, title: string, content: string, path: string}[] = [
         {
             icon: 'heroicons_outline:user-circle',
-            title: 'user',
+            title: 'nav.users',
             content: 'Manage users information',
             path: 'overview'
         },
         {
             icon: 'heroicons_outline:user-circle',
-            title: 'roles',
+            title: 'nav.roles',
             content: 'Manage roles information',
             path: 'roles'
         }
