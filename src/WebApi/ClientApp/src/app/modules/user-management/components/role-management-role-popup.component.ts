@@ -81,50 +81,50 @@ export class RoleManagementRolePopupComponent extends BasePopup<RoleManagementRo
 
         this.permissionSection.user = [
             {
-                title: 'View All',
-                description: 'View all users',
+                title: 'title.viewAll',
+                description: 'description.viewallUser',
                 value: 'user:view_all'
             },
             {
-                title: 'Update User',
-                description: 'Update user',
+                title: 'title.updateUser',
+                description: 'description.updateUser',
                 value: 'user:update'
             },
             {
-                title: 'Delete User',
-                description: 'Delete user',
+                title: 'title.deleteUser',
+                description: 'description.deleteUser',
                 value: 'user:delete'
             },
             {
-                title: 'Set Roles for User',
-                description: 'Set roles for user',
+                title: 'title.setrolesforUser',
+                description: 'description.setrolesforUser',
                 value: 'user:set_roles'
             }
         ]
         this.permissionSection.roles = [
             {
-                title: 'View All',
-                description: 'View all roles',
+                title: 'title.viewAll',
+                description: 'description.viewallRoles',
                 value: 'role:view_all'
             },
             {
-                title: 'Create Role',
-                description: 'Create new role',
+                title: 'title.createRole',
+                description: 'description.createnewRole',
                 value: 'role:create'
             },
             {
-                title: 'Update Role',
-                description: 'Update role',
+                title: 'title.updateRole',
+                description: 'description.updateRole',
                 value: 'role:update'
             },
             {
-                title: 'Delete Role',
-                description: 'Delete role',
+                title: 'title.deleteRole',
+                description: 'description.deleteRole',
                 value: 'role:delete'
             },
             {
-                title: 'Set permissions for Role',
-                description: 'Set permissions for role',
+                title: 'title.setpermissionsforRole',
+                description: 'description.setpermissionsforRole',
                 value: 'role:set_permissions'
             }
         ]

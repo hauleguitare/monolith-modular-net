@@ -16,7 +16,13 @@
         "firstName": "First name",
         "lastName": "Last name",
         "emailAddress": "Email address",
-        "password": "Password"
+        "password": "Password",
+        "activated": "Activated",
+        "name": "Name",
+        "priority": "Priority",
+        "default": "Default",
+        "role": "Role",
+        "user": "User"
     },
     "hint": {
         "doNotHaveAnAccount": "Don't have an account?"
@@ -24,13 +30,28 @@
     "nav": {
         "signIn": "Sign In",
         "signUp": "Sign Up",
-        "userManagementOverview": "User management overview" ,
-        "settings" : "Settings" ,
-        "roleManagementOverview" : "Role Management"
+        "userManagementOverview": "User management overview",
+        "settings": "Settings",
+        "roleManagementOverview": "Role Management",
+        "userSettings": "User Setting",
+        "users": "Users",
+        "roles": "Roles",
+        "account" :  "Account"
     },
     "title": {
         "succeed": "Succeed",
-        "failed": "Failed"
+        "failed": "Failed",
+        "roleManagementPopup": "Role Management Popup",
+        "roles": "Roles",
+        "viewAll": "View All",
+        "createRole": "Create Role",
+        "updateRole": "Update Role",
+        "deleteRole": "Delete Role",
+        "setpermissionsforRole": "Set Permissions For Role",
+        "updateUser": "Update User",
+        "deleteUser": "Delete User",
+        "setrolesforUser": "Set Roles For User",
+        "userManagementPopup": "User Management Popup"
     },
     "message": {
         "operationSuccessful": "Operation was successful",
@@ -40,8 +61,30 @@
         "no": "NO.",
         "email": "Email",
         "name": "Name",
-        "isActive": "Is active" ,
-        "priority" : "Priority" ,
-        "isDefault" : "Is Default"
+        "isActive": "Is active",
+        "priority": "Priority",
+        "isDefault": "Is Default"
+    },
+    "button": {
+        "verify": "Verify",
+        "save": "Save"
+    },
+    "action": {
+        "edit": "Edit"
+    },
+    "description": {
+        "viewallRoles": "View All Roles",
+        "createnewRole": "Create New Role",
+        "updateRole": "Update Role",
+        "deleteRole": "Delete Role",
+        "setpermissionsforRole": "Set Permissisons For Role",
+        "viewallUser": "View All User",
+        "updateUser": "Update User",
+        "deleteUser": "Delete User",
+        "setrolesforUser": "Set Roles For User"
+    },
+    "content": {
+        "defaultIsDefaultRoleInSystem": "Default Is Default Role In System",
+        "grantPermissionsForRole": "Grant Permissions For Role"
     }
 }

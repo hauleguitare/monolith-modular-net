@@ -31,7 +31,7 @@ export class UserSettingsComponent implements OnInit, OnDestroy
     opened: BooleanInput = true;
     catalog: {icon: string, title: string, content: string, path: string}[] = [{
         icon: 'heroicons_outline:user-circle',
-        title: 'account',
+        title: 'nav.account',
         content: 'Manage your public profile and private information',
         path: 'account'
     }]
