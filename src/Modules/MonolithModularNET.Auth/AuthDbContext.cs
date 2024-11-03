@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Abstractions;
 using MonolithModularNET.Extensions.Shared.Permissions;
+using MySql.EntityFrameworkCore.Extensions;
 
 namespace MonolithModularNET.Auth;
 
@@ -21,8 +22,6 @@ public class AuthDbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-
         // AuthV1ClassicToken builder
         modelBuilder.Entity<AuthV1ClassicToken>(builder =>
         {

@@ -28,11 +28,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModularNET.User.Inf
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonolithModular.Master", "MonolithModular.Master", "{174B6DF9-12DA-45E0-8447-BACE1CF1784C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModular.Master.Core", "Modules\MonolithModular.Master.Core\MonolithModular.Master.Core.csproj", "{54C7F889-4660-4B0B-BA1C-81692CCCCB63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModularNET.Master.Core", "Modules\MonolithModularNET.Master.Core\MonolithModularNET.Master.Core.csproj", "{54C7F889-4660-4B0B-BA1C-81692CCCCB63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModular.Master.Infrastructure", "Modules\MonolithModular.Master.Infrastructure\MonolithModular.Master.Infrastructure.csproj", "{78E193C1-F2D6-4FAF-9B02-FEBC146CEA1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModularNET.Master.Infrastructure", "Modules\MonolithModularNET.Master.Infrastructure\MonolithModularNET.Master.Infrastructure.csproj", "{78E193C1-F2D6-4FAF-9B02-FEBC146CEA1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModular.Master", "Modules\MonolithModular.Master\MonolithModular.Master.csproj", "{59811815-A5FA-470D-8B2D-A1BE23331062}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModularNET.Master", "Modules\MonolithModularNET.Master\MonolithModularNET.Master.csproj", "{59811815-A5FA-470D-8B2D-A1BE23331062}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonolithModularNET.Extensions.Core", "Modules\MonolithModularNET.Extensions.Core\MonolithModularNET.Extensions.Core.csproj", "{F95716AD-88D4-407F-B665-BCC1D3B7980E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,7 @@ Global
 		{54C7F889-4660-4B0B-BA1C-81692CCCCB63} = {174B6DF9-12DA-45E0-8447-BACE1CF1784C}
 		{78E193C1-F2D6-4FAF-9B02-FEBC146CEA1D} = {174B6DF9-12DA-45E0-8447-BACE1CF1784C}
 		{59811815-A5FA-470D-8B2D-A1BE23331062} = {174B6DF9-12DA-45E0-8447-BACE1CF1784C}
+		{F95716AD-88D4-407F-B665-BCC1D3B7980E} = {D39D3C97-9A91-4680-9106-064D509A6133}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B0432153-4D72-4825-AF7A-7DF63F1C1AAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -100,5 +103,9 @@ Global
 		{59811815-A5FA-470D-8B2D-A1BE23331062}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59811815-A5FA-470D-8B2D-A1BE23331062}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59811815-A5FA-470D-8B2D-A1BE23331062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F95716AD-88D4-407F-B665-BCC1D3B7980E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F95716AD-88D4-407F-B665-BCC1D3B7980E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F95716AD-88D4-407F-B665-BCC1D3B7980E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F95716AD-88D4-407F-B665-BCC1D3B7980E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

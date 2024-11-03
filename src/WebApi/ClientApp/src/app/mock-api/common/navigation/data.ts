@@ -60,6 +60,20 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 link    :   'management/users',
             }
         ]
+    },
+    {
+        id      :   'task-management',
+        title   :   'Task Management',
+        type    :   'group',
+        children    :   [
+            {
+                id      :   'task',
+                title  :   'Task',
+                type    :   'basic',
+                icon    :   'heroicons_outline:user-group',
+                link    :   'task',
+            }
+        ]
     }
 ];
 export const compactNavigation: FuseNavigationItem[] = [

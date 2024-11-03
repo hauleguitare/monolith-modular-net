@@ -27,7 +27,7 @@ public abstract class AuditableEntity<TId>: BaseEntity<TId>, IAuditableEntity
 
     public virtual IAuditableEntity UpdateCreatedAt()
     {
-        CreatedAt = DateTimeOffset.UtcNow;
+        CreatedAt = DateTimeOffset.Now;
 
         return this;
     }
@@ -41,7 +41,7 @@ public abstract class AuditableEntity<TId>: BaseEntity<TId>, IAuditableEntity
 
     public virtual IAuditableEntity UpdateModifiedAt()
     {
-        ModifiedAt = DateTimeOffset.UtcNow;
+        ModifiedAt = DateTimeOffset.Now;
         return this;
     }
 }

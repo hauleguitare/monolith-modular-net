@@ -1,9 +1,13 @@
 ﻿namespace MonolithModularNET.Extensions.Abstractions;
 
-public interface IUnitOfWork<TContext> : IDisposable where TContext : class
+public interface IUnitOfWork<TContext> : IUnitOfWork where TContext : class
 {
     public TContext Context { get; set; }
-    
+}
+
+
+public interface IUnitOfWork : IDisposable
+{
     public bool SaveChanges();
     public Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
 

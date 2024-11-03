@@ -1,4 +1,5 @@
 using MonolithModularNET.Auth;
+using MonolithModularNET.Master.Infrastructure;
 using MonolithModularNET.User.Infrastructure;
 using WebApi.Bootstraps;
 
@@ -14,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer()
 // Add MonolithModularNET Authorization Bootstrapper
 builder.Services.AddAuthBootstrapper(builder.Configuration, builder.Environment);
 builder.Services.AddUserBootstrapper(builder.Configuration, builder.Environment);
+builder.Services.AddMasterBootstrapper(builder.Configuration, builder.Environment);
 
 // Add SpaStaticFiles
 builder.Services.AddSpaStaticFiles(conf =>
@@ -67,5 +69,8 @@ app.MapMonolithModularNetUserApi();
 
 // map api/roles
 app.MapMonolithModularNetRoleApi();
+
+// map api/master
+app.MapMonolithModularNetMaster();
 
 app.Run();

@@ -36,7 +36,9 @@
         "userSettings": "User Setting",
         "users": "Users",
         "roles": "Roles",
-        "account" :  "Account"
+        "account" :  "Account",
+        "startTaskSession": "Start task session.",
+        "taskSession": "Task session"
     },
     "title": {
         "succeed": "Succeed",
@@ -67,7 +69,9 @@
     },
     "button": {
         "verify": "Verify",
-        "save": "Save"
+        "save": "Save",
+        "activeUHRS": "Active UHRS",
+        "startWorkingSession": "Start working session"
     },
     "action": {
         "edit": "Edit"
@@ -85,6 +89,7 @@
     },
     "content": {
         "defaultIsDefaultRoleInSystem": "Default Is Default Role In System",
-        "grantPermissionsForRole": "Grant Permissions For Role"
+        "grantPermissionsForRole": "Grant Permissions For Role",
+        "startTaskSession": "Start task session by received email."
     }
 }

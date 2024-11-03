@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Modules\MonolithModularNET.Master.Infrastructure\MonolithModularNET.Master.Infrastructure.csproj" />
       <ProjectReference Include="..\Modules\MonolithModularNET.Auth\MonolithModularNET.Auth.csproj" />
       <ProjectReference Include="..\Modules\MonolithModularNET.User.Infrastructure\MonolithModularNET.User.Infrastructure.csproj" />
     </ItemGroup>

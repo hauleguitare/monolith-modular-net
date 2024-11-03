@@ -1,0 +1,48 @@
+<div class="min-w-0 md:w-140 w-100 overflow-hidden relative">
+    <!--Header-->
+    <div class="flex justify-between items-center mb-4">
+        <div class="text-xl dark:text-white font-medium leading-none tracking-tight">
+            {{ properties.title | transloco }}
+        </div>
+
+        <button (click)="cancel()" mat-icon-button color="accent">
+            <mat-icon svgIcon="heroicons_outline:x-mark"></mat-icon>
+        </button>
+    </div>
+
+    <!--Content-->
+    <div class="mt-8 overflow-y-auto sm:h-120 sm:max-h-120">
+        <div class="w-full max-w-3xl">
+            <form [formGroup]="formGroup">
+                <div class="w-full">
+                    <div class="text-xl">{{ 'nav.startTaskSession' | transloco }}</div>
+                    <div class="text-secondary"> {{ 'content.startTaskSession' | transloco }} </div>
+                </div>
+
+                <div class="mt-8 grid w-full gap-6 sm:grid-cols-4">
+                    <div class="sm:col-span-4">
+                        <mat-form-field class="w-full">
+                            <mat-label>{{ 'label.emailAddress' | transloco }}</mat-label>
+                            <input (focusout)="onFocusOut($event)" id="email" matInput [formControlName]="'email'" />
+                            @if (formGroup.get('email').hasError('email')) {
+                                <mat-error> {{ 'error.emailAddressRequired' | transloco }} </mat-error>
+                            }
+                        </mat-form-field>
+                    </div>
+
+                    <div class="sm:col-span-4">
+                        <mat-form-field class="w-full">
+                            <mat-label>{{ 'label.password' | transloco }}</mat-label>
+                            <input id="password" matInput [formControlName]="'password'" />
+                        </mat-form-field>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end mt-4">
+        <button [disabled]="!valid" (click)="save()" mat-flat-button color="primary">{{ 'button.activeUHRS' | transloco }}</button>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="absolute inset-0 flex min-w-0 flex-col overflow-y-auto">
+    <div class="flex flex-auto p-6 sm:p-10">
+        <div class="mx-auto flex w-full max-w-xs flex-auto flex-col sm:max-w-5xl">
+            <div class="mt-8 grid grid-cols-1 gap-8 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
+                @for (task of tasks; track task.id) {
+                    <div class="bg-card flex h-96 flex-col justify-between overflow-hidden rounded-2xl shadow">
+                        <div class="flex flex-col p-6">
+                            <div class="flex items-center justify-between">
+                                <div class="rounded-full px-3 py-0.5 text-sm font-semibold bg-blue-100 text-blue-800 dark:bg-blue-500 dark:text-blue-50">
+                                    {{task.companyName}}
+                                </div>
+                            </div>
+                            <div class="mt-4 text-lg font-medium"> {{ task.taskName }} </div>
+                            <div class="text-secondary mt-0.5 line-clamp-2"> {{ task.description }} </div>
+                            <div class="my-6 h-1 w-12 border-t-2"></div>
+                        </div>
+
+                        <div class="bg-gray-50 px-6 py-4 text-right dark:bg-transparent flex items-center">
+                            <button (click)="startSession(task.id)" mat-stroked-button>
+                                <mat-icon svgIcon="heroicons_outline:arrow-small-right"></mat-icon>
+                                <span class="ml-2">{{'button.startWorkingSession' | transloco }}</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

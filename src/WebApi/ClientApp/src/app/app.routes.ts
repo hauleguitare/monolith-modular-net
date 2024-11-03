@@ -77,7 +77,8 @@ export const appRoutes: Route[] = [
             {path: 'example', loadChildren: () => import('app/modules/admin/example/example.routes')},
 
             { path: 'user/settings', loadChildren: () => import('app/modules/user-settings/user-settings.routes') },
-            { path: 'management/users', loadChildren: () => import('app/modules/user-management/user-management.routes') }
+            { path: 'management/users', loadChildren: () => import('app/modules/user-management/user-management.routes') },
+            { path: 'task', loadChildren:() => import('app/modules/tasks/task.routes') }
         ]
     }
 ];
