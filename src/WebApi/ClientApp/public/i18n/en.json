@@ -23,7 +23,8 @@
     },
     "nav": {
         "signIn": "Sign In",
-        "signUp": "Sign Up"
+        "signUp": "Sign Up",
+        "userManagementOverview": "User management overview"
     },
     "title": {
         "succeed": "Succeed",
@@ -32,5 +33,11 @@
     "message": {
         "operationSuccessful": "Operation was successful",
         "operationFailed": "Operation was failed, please try again."
+    },
+    "col": {
+        "no": "NO.",
+        "email": "Email",
+        "name": "Name",
+        "isActive": "Is active"
     }
 }
