@@ -48,7 +48,7 @@ export class UserService {
             map(({result}) => {
                 return {
                     ...result,
-                    name: `${result.firstName} + ${result.lastName}`,
+                    name: `${result.firstName} ${result.lastName}`,
                     status: 'online',
                 } as User
             }),
