@@ -24,7 +24,9 @@
     "nav": {
         "signIn": "Sign In",
         "signUp": "Sign Up",
-        "userManagementOverview": "User management overview"
+        "userManagementOverview": "User management overview" ,
+        "settings" : "Settings" ,
+        "roleManagementOverview" : "Role Management"
     },
     "title": {
         "succeed": "Succeed",
@@ -38,6 +40,8 @@
         "no": "NO.",
         "email": "Email",
         "name": "Name",
-        "isActive": "Is active"
+        "isActive": "Is active" ,
+        "priority" : "Priority" ,
+        "isDefault" : "Is Default"
     }
 }
