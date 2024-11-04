@@ -8,7 +8,7 @@ public class AuthResult : AuthResult<object>
         Data = data
     };
     
-    public new static AuthResult Failure(ICollection<AuthError> errors) => new ()
+    public new static AuthResult Failure(params AuthError[] errors) => new ()
     {
         Succeed = false,
         Errors = errors
@@ -30,7 +30,7 @@ public class AuthResult<TResponse> where TResponse : class
         Data = data
     };
 
-    public static AuthResult<TResponse> Failure(ICollection<AuthError> errors) => new ()
+    public static AuthResult<TResponse> Failure(params AuthError[] errors) => new ()
     {
         Succeed = false,
         Errors = errors

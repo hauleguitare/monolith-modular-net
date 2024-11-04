@@ -25,7 +25,7 @@ public static class Startup
         group.MapPost("/sign-up", authApiHandler.HandleSignUpAsync);
         group.MapPost("/sign-in", authApiHandler.HandleLoginAsync);
         group.MapPost("/refresh", authApiHandler.HandleRefreshAsync);
-        group.MapPost("/logout", authApiHandler.HandleLogoutAsync);
+        group.MapPost("/logout", authApiHandler.HandleLogoutAsync).RequireAuthorization();
 
 
         var authV1ClassicTokenGroup = group.MapGroup("classic-tokens");

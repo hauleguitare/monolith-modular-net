@@ -60,7 +60,7 @@ public class SignInService: ISignInService<AuthUser>
             return AuthResult.Failure([describer.PasswordMisMatched()]);
         }
 
-        return await CredentialAsync(user, cancellationToken);
+        return await CredentialAsync(user, DateTime.UtcNow.AddDays(7),cancellationToken);
     }
 
     public async Task<AuthResult> LogoutAsync(CancellationToken cancellationToken = default)
@@ -109,7 +109,7 @@ public class SignInService: ISignInService<AuthUser>
         return claims;
     }
     
-    private async Task<AuthResult> CredentialAsync(AuthUser user, CancellationToken cancellationToken = default)
+    private async Task<AuthResult> CredentialAsync(AuthUser user, DateTime expiredAt, CancellationToken cancellationToken = default)
     {
         var claims = await GrantClaimsAsync(user);
         
@@ -124,21 +124,17 @@ public class SignInService: ISignInService<AuthUser>
             Issuer = _options.Issuer,
             Audience = _options.Audience
         });
-        var expiredAt = DateTime.UtcNow.AddDays(7);
+
         var expiresTime = expiredAt - DateTime.UtcNow;
         
-        var rfTokenResult = _refreshTokenService.Encoding(new GenerateRefreshTokenOptions()
+        var refreshToken = _refreshTokenService.Encoding(new GenerateRefreshTokenOptions()
         {
             Jti = jti,
             SecretKey =  _options.SecretKey!,
-             ExpiredAt =  expiredAt
+            ExpiredAt =  expiredAt
         });
 
-        if (!rfTokenResult.Succeed)
-        {
-            throw new Exception("Refresh Token can't create, something went wrong!");
-        }
-        await SetRefreshTokenCacheAsync(user.Id, rfTokenResult.Token!, expiresTime, cancellationToken);
+        await SetRefreshTokenCacheAsync(user.Id, refreshToken, expiresTime, cancellationToken);
 
 
         var userResponse = new UserResponse()
@@ -182,7 +178,7 @@ public class SignInService: ISignInService<AuthUser>
         return AuthResult.Success(new SignInResponse()
         {
             AccessToken = token,
-            RefreshToken = rfTokenResult.Token,
+            RefreshToken = refreshToken,
             User = userResponse 
         });
     }
@@ -219,23 +215,24 @@ public class SignInService: ISignInService<AuthUser>
             return AuthResult.Failure([describer.InvalidToken()]);
         }
         
-        var validTokenResult = _refreshTokenService.Decoding(decodeToken.Id, _options.SecretKey!, refreshToken);
+        var validTokenResult = _refreshTokenService.Validate(decodeToken.Id, _options.SecretKey!, refreshToken);
 
         if (!validTokenResult.Succeed)
         {
-            return AuthResult.Failure([describer.InvalidToken()]);
+            return AuthResult.Failure(describer.InvalidToken());
         }
 
         var cacheRefreshToken = await FindRefreshTokenAsync(userId);
+        
 
         if (string.IsNullOrEmpty(cacheRefreshToken))
         {
-            return AuthResult.Failure([describer.TokenHasExpired()]);
+            return AuthResult.Failure(describer.TokenHasExpired());
         }
         
         if (!IsEqualRefreshToken(refreshToken, cacheRefreshToken))
         {
-            return AuthResult.Failure([describer.InvalidToken()]);
+            return AuthResult.Failure(describer.InvalidToken());
         }
 
         var user = await _userManager.FindByIdAsync(userId);
@@ -244,8 +241,15 @@ public class SignInService: ISignInService<AuthUser>
         {
             throw new Exception("Models is not found, something went wrong, please check!");
         }
+        
+        var decodeRefreshToken = _refreshTokenService.Decoding(cacheRefreshToken);
 
-        return await CredentialAsync(user, cancellationToken);
+        if (!decodeRefreshToken.ExpiredAt.HasValue)
+        {
+            throw new Exception("Refresh token don't have expired at time. Please check.");
+        }
+
+        return await CredentialAsync(user, decodeRefreshToken.ExpiredAt.Value, cancellationToken);
     }
 
     private bool IsEqualRefreshToken(string client, string server)

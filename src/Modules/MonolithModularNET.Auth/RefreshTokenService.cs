@@ -6,7 +6,7 @@ namespace MonolithModularNET.Auth;
 
 public class RefreshTokenService: IRefreshTokenService
 {
-    public TokenResult Encoding(GenerateRefreshTokenOptions options)
+    public string Encoding(GenerateRefreshTokenOptions options)
     {
         ArgumentNullException.ThrowIfNull(options.Jti);
         ArgumentNullException.ThrowIfNull(options.SecretKey);
@@ -24,8 +24,7 @@ public class RefreshTokenService: IRefreshTokenService
             Buffer.BlockCopy(secretKeyBytes , 0, dataBytes, timeBytes.Length + keyBytes.Length, secretKeyBytes.Length);
 
 
-            var token = Convert.ToBase64String(dataBytes);
-            return TokenResult.Success(token);
+            return Convert.ToBase64String(dataBytes);
         }
     }
 
@@ -61,7 +60,7 @@ public class RefreshTokenService: IRefreshTokenService
         return comparer.Compare(hashOfInput, hash) == 0;
     }
     
-    public TokenResult Decoding(string jti, string secretKey, string token)
+    public TokenResult Validate(string jti, string secretKey, string token)
     {
         byte[] dataBytes     = Convert.FromBase64String(token);
         byte[] timeBytes     = dataBytes.Take(8).ToArray();
@@ -102,5 +101,18 @@ public class RefreshTokenService: IRefreshTokenService
         }
 
         return TokenResult.Success();
+    }
+
+    public RefreshTokenValue Decoding(string token)
+    {
+        byte[] dataBytes     = Convert.FromBase64String(token);
+        byte[] timeBytes     = dataBytes.Take(8).ToArray();
+        byte[] keyBytes      = dataBytes.Skip(8).Take(16).ToArray();
+        
+        return new RefreshTokenValue()
+        {
+            Jti = new Guid(keyBytes).ToString(),
+            ExpiredAt = DateTime.FromBinary(BitConverter.ToInt64(timeBytes, 0))
+        };
     }
 }

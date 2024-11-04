@@ -2,6 +2,7 @@
 
 public interface IRefreshTokenService
 {
-    public TokenResult Encoding(GenerateRefreshTokenOptions tokenOptions);
-    public TokenResult Decoding(string jti, string secretKey, string token);
+    public string Encoding(GenerateRefreshTokenOptions tokenOptions);
+    public TokenResult Validate(string jti, string secretKey, string token);
+    public RefreshTokenValue Decoding(string token);
 }

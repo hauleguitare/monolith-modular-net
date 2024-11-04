@@ -25,4 +25,8 @@ export class ApiAuthService
     {
         return this._http.post<ApiResponse>(`${this.endpoint}/log-out`, {});
     }
+
+    refresh(refreshToken: string) {
+        return this._http.post<ApiResponse<LoggedInResponse>>(`${this.endpoint}/refresh`, {refreshToken})
+    }
 }

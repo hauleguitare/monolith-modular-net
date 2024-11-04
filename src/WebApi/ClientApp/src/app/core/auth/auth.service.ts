@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
-import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, of, switchMap, takeUntil, throwError } from 'rxjs';
 import { ApiAuthService } from '@api/auth';
 import { LocalStorageService } from '@fuse/services/local-storage/local-storage.service';
 import { User } from '../user/user.types';
@@ -28,6 +28,14 @@ export class AuthService {
 
     get accessToken(): string {
         return this._localStorageService.get('accessToken') ?? '';
+    }
+
+    set refreshToken(token: string) {
+        this._localStorageService.set('refreshToken', token)
+    }
+
+    get refreshToken(): string {
+        return this._localStorageService.get('refreshToken') ?? '';
     }
 
     // -----------------------------------------------------------------------------------------------------
@@ -67,6 +75,7 @@ export class AuthService {
             switchMap((response) => {
                 // Store the access token in the local storage
                 this.accessToken = response.result.accessToken;
+                this.refreshToken = response.result.refreshToken;
 
                 // Set the authenticated flag to true
                 this._authenticated = true;
@@ -85,9 +94,9 @@ export class AuthService {
     }
 
     /**
-     * Sign in using the access token
+     * Refresh user by using the access token
      */
-    signInUsingToken(): Observable<any> {
+    refreshUserByUsingToken(): Observable<any> {
         // Sign in using the token
         return this._userService.get().pipe(
             catchError(() =>
@@ -167,10 +176,45 @@ export class AuthService {
 
         // Check the access token expire date
         if (AuthUtils.isTokenExpired(this.accessToken)) {
-            return of(false);
+
+            if (!this.refreshToken)
+            {
+                return of(false);
+            }
+
+            return this.signByRefreshToken(this.refreshToken);
         }
 
         // If the access token exists, and it didn't expire, sign in using it
-        return this.signInUsingToken();
+        return this.refreshUserByUsingToken();
+    }
+
+
+    signByRefreshToken(refreshToken: string) {
+        return this._apiAuthService.refresh(refreshToken)
+            .pipe(
+                switchMap(({ result }) => {
+                    // Store the access token in the local storage
+                    this.accessToken = result.accessToken;
+                    this.refreshToken = result.refreshToken;
+
+                    // Set the authenticated flag to true
+                    this._authenticated = true;
+
+                    // Set user data
+                    this._userService.user = {
+                        ...result.user,
+                        name: `${result.user.firstName} ${result.user.lastName}`,
+                        isActive: result.user.isActive,
+                        status: 'online',
+                    };
+
+                    return of(true);
+                }),
+
+                catchError((err) => {
+                    return of(false)
+                })
+            );
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using MonolithModularNET.Auth.Core;
 using MonolithModularNET.Extensions.Abstractions;
 
@@ -38,11 +37,13 @@ public class SignUpService(
 
             if (!identityResult.Succeeded)
             {
-                return AuthResult.Failure(identityResult.Errors.Select(e => new AuthError()
+                var errors = identityResult.Errors.Select(e => new AuthError()
                 {
                     Code = e.Code,
                     Description = e.Description
-                }).ToList());
+                }).ToArray();
+                
+                return AuthResult.Failure(errors);
             }
             await unitOfWork.SaveChangesAsync(cancellationToken);
             await userManager.AddToRoleAsync(user, defaultRole.Name!);
