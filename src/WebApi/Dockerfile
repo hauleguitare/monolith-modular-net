@@ -1,10 +1,16 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
+﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
 WORKDIR /app
-EXPOSE 443
-EXPOSE 80
+EXPOSE 8080
+EXPOSE 8081
+
+
+FROM node:18.20.4-alpine as client-app
+WORKDIR /app
+COPY WebApi/ClientApp .
+RUN npm install --legacy-peer-deps
+RUN npm run-script build
+
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -21,19 +27,17 @@ COPY ["Modules/MonolithModularNET.Auth.Core/MonolithModularNET.Auth.Core.csproj"
 COPY ["Modules/MonolithModularNET.User.Infrastructure/MonolithModularNET.User.Infrastructure.csproj", "Modules/MonolithModularNET.User.Infrastructure/"]
 COPY ["Modules/MonolithModularNET.User.Core/MonolithModularNET.User.Core.csproj", "Modules/MonolithModularNET.User.Core/"]
 COPY ["Modules/MonolithModularNET.User/MonolithModularNET.User.csproj", "Modules/MonolithModularNET.User/"]
-RUN dotnet restore "./WebApi/WebApi.csproj"
+RUN dotnet restore "WebApi/WebApi.csproj"
 COPY . .
 WORKDIR "/src/WebApi"
-RUN dotnet build "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 COPY --from=client-app /app/dist /app/ClientApp/dist
-ENV ASPNETCORE_URLS=http://+:80
-ENV ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "WebApi.dll"]

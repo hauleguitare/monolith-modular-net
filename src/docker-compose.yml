@@ -2,15 +2,14 @@ version: '3.4'
 
 services:
   webapi:
-    image: ${DOCKER_REGISTRY-}webapi
-    build:
-      context: .
-      dockerfile: WebApi/Dockerfile
+    image: hauleguitar/webapi:1.0.0-demo
+    environment:
+      - ASPNETCORE_HTTP_PORTS=80
     ports:
-        - '8080:8080'
+      - '8080:80'
     links:
-        - redis
-        - db 
+      - redis
+      - db 
   redis:
     container_name: MonolithModularNET_Redislabs
     image: redislabs/redismod

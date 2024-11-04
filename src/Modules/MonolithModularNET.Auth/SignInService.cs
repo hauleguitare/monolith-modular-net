@@ -121,7 +121,8 @@ public class SignInService: ISignInService<AuthUser>
             Claims = claims,
             ExpiredAt = DateTime.UtcNow.AddMinutes(_options.ExpiresInMinutes),
             SecretKey = _options.SecretKey,
-            Issuer = _options.Issuer
+            Issuer = _options.Issuer,
+            Audience = _options.Audience
         });
         var expiredAt = DateTime.UtcNow.AddDays(7);
         var expiresTime = expiredAt - DateTime.UtcNow;

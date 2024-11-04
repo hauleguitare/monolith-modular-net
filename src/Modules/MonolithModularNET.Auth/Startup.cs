@@ -143,7 +143,9 @@ public static class Startup
             services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
             {
                 SecretKey = "bOBL7HWpP898C3zkWKQS8Uqa5ZWX/7UnSM5yRWOSZWTennHj5ZESA917+8Nlx65L",
-                ExpiresInMinutes = 120
+                ExpiresInMinutes = 120,
+                Issuer = "http://localhost:8080",
+                Audience = "http://localhost:8080"
             });
         }
         else
@@ -156,12 +158,8 @@ public static class Startup
             {
                 throw new ArgumentException($"{nameof(jwtTokenOptions.SecretKey)} must be 64 bytes length");
             }
-
-            services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => new AuthJwtTokenOptions()
-            {
-                SecretKey = jwtTokenOptions.SecretKey,
-                ExpiresInMinutes = jwtTokenOptions.ExpiresInMinutes
-            });
+            
+            services.TryAddTransient(typeof(AuthJwtTokenOptions), provider => jwtTokenOptions);
         }
         return services;
     }

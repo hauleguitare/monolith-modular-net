@@ -9,6 +9,8 @@ public class CreateJwtTokenOptions
     public DateTime? ExpiredAt { get; set; }
     
     public string? Issuer { get; set; }
+    
+    public string? Audience { get; set; }
 
     public ICollection<Claim> Claims = new List<Claim>();
 }
