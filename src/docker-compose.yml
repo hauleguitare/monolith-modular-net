@@ -1,0 +1,55 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: .
+      dockerfile: WebApi/Dockerfile
+    ports:
+        - '8080:8080'
+    links:
+        - redis
+        - db 
+  redis:
+    container_name: MonolithModularNET_Redislabs
+    image: redislabs/redismod
+    ports:
+      - '6379:6379'
+    restart: unless-stopped
+    networks:
+      - redis_network
+  
+  redis-insight:
+    container_name: MonolithModularNET_Redisinsight
+    image: redis/redisinsight:latest
+    ports:
+      - '5540:5540'
+    restart: unless-stopped
+    volumes:
+      - redisinsight:/data
+    networks:
+      - redis_network
+  
+  db:
+    image: mysql:5.7.40-debian
+    container_name: MonolithModularNET_Database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-123456@#}
+    volumes:
+      - /mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    networks:
+      - mysql_network
+volumes:
+  mysql:
+  redisinsight:
+
+networks:
+  mysql_network:
+    driver: bridge
+    
+  redis_network:
+    driver: bridge
